@@ -23,4 +23,4 @@ jobs:
         run: npm install
 
       - name: Run ESLint
-        run: npx eslint .  # Adjust command as needed
+        run: npx eslint web_app_frontend/src  # Adjust command as needed
