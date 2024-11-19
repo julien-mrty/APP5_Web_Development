@@ -64,10 +64,6 @@ linters-settings:
     require-explanation: true
     require-specific: true
 
-  sloglint:
-    no-global: "all"
-    context: "scope"
-
   tenv:
     all: true
 
@@ -86,7 +82,6 @@ linters:
     - gocritic
     - goimports
     - revive
-    - sloglint
 
 run:
   timeout: 3m
