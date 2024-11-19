@@ -29,7 +29,7 @@ jobs:
         run: npm run lint --prefix web_app_frontend
 
       - name: Run dev server
-        run: npm run dev
+        run: npm run dev --prefix web_app_frontend
 
   lint_backend:
     runs-on: ubuntu-latest
