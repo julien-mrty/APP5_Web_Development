@@ -7,6 +7,17 @@
 # It is very strict, but not extremely strict.
 # Feel free to adapt and change it for your needs.
 
+name: Golangci backend code linter
+run-name: ${{ github.actor }} Golangci backend code linter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 run:
   # Timeout for analysis, e.g. 30s, 5m.
   # Default: 1m
