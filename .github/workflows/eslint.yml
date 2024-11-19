@@ -24,6 +24,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install --prefix web_app_frontend/
+        working-directory: ./web_app_frontend
 
       - name: Run ESLint
         run: npm run lint
+        working-directory: ./web_app_frontend
