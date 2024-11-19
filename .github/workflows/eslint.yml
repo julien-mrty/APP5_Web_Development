@@ -23,9 +23,8 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install --prefix web_app_frontend/
-        working-directory: /home/runner/work/Web_app_jump_higher/web_app_frontend
+        run: npm install --prefix web_app_frontend
 
       - name: Run ESLint
         run: npm run lint
-        working-directory: /home/runner/work/Web_app_jump_higher/web_app_frontend
+        working-directory: ./web_app_frontend
