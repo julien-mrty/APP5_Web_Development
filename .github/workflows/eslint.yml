@@ -26,4 +26,4 @@ jobs:
         run: npm install --prefix web_app_frontend
 
       - name: Run ESLint
-        run: eslint .
+        run: npm run lint --prefix web_app_frontend
