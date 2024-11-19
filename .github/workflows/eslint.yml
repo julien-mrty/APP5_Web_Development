@@ -1,4 +1,5 @@
-name: Lint Code
+name: ESLint frontend code
+run-name: ${{ github.actor }} ESLint frontend code
 
 on:
   push:
