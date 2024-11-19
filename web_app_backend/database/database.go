@@ -1,24 +1,36 @@
 package database
 
 import (
-	"database/sql"
+	"fmt"
 	"log"
 
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+
+	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/models"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func ConnectDB() {
 	var err error
-	dsn := "root:@tcp(localhost:3306)/bdd_jump_higher"
-	DB, err = sql.Open("mysql", dsn)
+
+	// Configuration de la chaîne de connexion
+	dsn := "root:@tcp(localhost:3306)/bdd_jump_higher?charset=utf8mb4&parseTime=True&loc=Local"
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Erreur de connexion à la base de données :", err)
 	}
 
-	if err = DB.Ping(); err != nil {
-		log.Fatal("Erreur de ping à la base de données :", err)
+	// Appelle la fonction pour migrer les tables
+	migrateTables()
+}
+
+func migrateTables() {
+	// Migrer les modèles pour créer les tables dans la base de données
+	err := DB.AutoMigrate(&models.User{}, &models.Game{}, &models.Score{})
+	if err != nil {
+		log.Fatal("Erreur de migration des tables :", err)
 	}
-	log.Println("Connexion à la base de données réussie")
+	fmt.Println("Migration des tables réussie")
 }
