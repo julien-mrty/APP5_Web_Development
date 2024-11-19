@@ -23,7 +23,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install --prefix web_app_frontend/
+        run: npm install --prefix web_app_frontend
 
       - name: Run ESLint
-        run: npm run lint
+        run: npm run lint --prefix web_app_frontend
