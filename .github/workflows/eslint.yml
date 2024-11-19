@@ -1,5 +1,5 @@
 name: Project pipeline
-run-name: ${{ github.actor }} is running project pipeline
+run-name: ${{ github.actor }} Project pipeline
 
 on:
   push:
@@ -44,13 +44,18 @@ jobs:
 
       - name: Install golangci-lint
         run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
+          sh -s -- -b $(go env GOPATH)/bin v1.62.0
           export PATH=$PATH:$(go env GOPATH)/bin
 
       - name: Download Dependencies
         run: go mod download
         working-directory: ./web_app_backend
 
+      - name: Verify Dependencies
+        run: go mod verify
+        working-directory: ./web_app_backend
+
       - name: Run golangci-lint
-        run: golangci-lint run
-        working-directory: ./web_app_backend  
+        run: golangci-lint run --verbose
+        working-directory: ./web_app_backend
