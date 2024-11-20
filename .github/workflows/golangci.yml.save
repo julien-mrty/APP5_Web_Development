@@ -1,0 +1,35 @@
+name: Golangci Backend Code Linter
+run-name: ${{ github.actor }} Golangci Backend Code Linter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23.3
+
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
+          export PATH=$PATH:$(go env GOPATH)/bin
+
+      - name: Download Dependencies
+        run: go mod download
+        working-directory: ./web_app_backend
+
+      - name: Run golangci-lint
+        run: golangci-lint run
+        working-directory: ./web_app_backend
