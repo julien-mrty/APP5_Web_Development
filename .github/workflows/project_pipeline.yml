@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  lint_frontend:
+  Frontend_checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,7 @@ jobs:
       - name: Run dev server
         run: npm run dev --prefix web_app_frontend
 
-  lint_backend:
+  Backend_checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
