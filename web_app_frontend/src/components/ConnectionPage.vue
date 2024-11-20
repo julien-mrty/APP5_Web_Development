@@ -14,22 +14,14 @@
   </template>
   
   <script>
+  import { useRouter } from "vue-router"; // Import useRouter
+  
   export default {
-    name: "ConnectionPage",
-    data() {
-      return {
-        username: "",
-        password: "",
-      };
-    },
     methods: {
       handleSubmit() {
-        if (this.username && this.password) {
-          console.log("Logging in:", this.username);
-          // Add login logic (e.g., API call)
-        } else {
-          alert("Please fill in both fields.");
-        }
+        const router = useRouter(); // Get the router instance
+        console.log("Logging in:", this.username); // Debug: Log input
+        router.push("/homepage"); // Redirect to HomePage
       },
     },
   };
