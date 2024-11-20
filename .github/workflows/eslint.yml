@@ -1,5 +1,5 @@
-name: ESLint frontend code
-run-name: ${{ github.actor }} ESLint frontend code
+name: Project pipeline
+run-name: ${{ github.actor }} Project pipeline
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  lint:
+  lint_frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,3 +27,35 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint --prefix web_app_frontend
+
+      - name: Run dev server
+        run: npm run dev --prefix web_app_frontend
+
+  lint_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23.3
+
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
+          sh -s -- -b $(go env GOPATH)/bin v1.62.0
+          export PATH=$PATH:$(go env GOPATH)/bin
+
+      - name: Download Dependencies
+        run: go mod download
+        working-directory: ./web_app_backend
+
+      - name: Verify Dependencies
+        run: go mod verify
+        working-directory: ./web_app_backend
+
+      - name: Run golangci-lint
+        run: golangci-lint run --verbose
+        working-directory: ./web_app_backend

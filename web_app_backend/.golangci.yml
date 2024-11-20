@@ -1,0 +1,87 @@
+linters-settings:
+  cyclop:
+    max-complexity: 30
+    package-average: 10.0
+
+  errcheck:
+    check-type-assertions: true
+
+  exhaustive:
+    check:
+      - switch
+      - map
+
+  exhaustruct:
+    exclude:
+      - "^net/http.Client$"
+      - "^net/url.URL$"
+      - "^os/exec.Cmd$"
+      - "^reflect.StructField$"
+      - "^github.com/stretchr/testify/mock.Mock$"
+      - "^golang.org/x/tools/go/analysis.Analyzer$"
+
+  funlen:
+    lines: 100
+    statements: 50
+    ignore-comments: true
+
+  gocognit:
+    min-complexity: 20
+
+  gocritic:
+    settings:
+      captLocal:
+        paramsOnly: false
+      underef:
+        skipRecvDeref: false
+
+  gomodguard:
+    blocked:
+      modules:
+        - github.com/golang/protobuf:
+            recommendations:
+              - google.golang.org/protobuf
+            reason: "Deprecated module. Use updated Google Protobuf."
+
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment
+    settings:
+      shadow:
+        strict: true
+
+  mnd:
+    ignored-functions:
+      - os.Chmod
+      - prometheus.LinearBuckets
+
+  nakedret:
+    max-func-lines: 50
+
+  nolintlint:
+    allow-no-explanation: [funlen, gocognit, lll]
+    require-explanation: true
+    require-specific: true
+
+  tenv:
+    all: true
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - staticcheck
+    - typecheck
+    - unused
+    - cyclop
+    - dupl
+    - funlen
+    - gocritic
+    - goimports
+    - revive
+
+run:
+  timeout: 3m
