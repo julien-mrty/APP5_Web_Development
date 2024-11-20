@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ConnectionPage from '../components/ConnectionPage.vue';
+import ConnectionPage from '../View/ConnectionPage.vue';
 import TheWelcome from '../components/TheWelcome.vue';
 
 const routes = [
@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 
