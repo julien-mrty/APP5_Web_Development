@@ -12,7 +12,7 @@ import (
 func GetAllGames(c *gin.Context) {
 	games, err := services.GetAllGames()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		services.HandleError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, games)
@@ -22,12 +22,12 @@ func GetAllGames(c *gin.Context) {
 func CreateGame(c *gin.Context) {
 	var game models.Game
 	if err := c.ShouldBindJSON(&game); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		services.HandleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := services.CreateGame(&game); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		services.HandleError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusCreated, game)
@@ -38,7 +38,7 @@ func GetGameByID(c *gin.Context) {
 	id := c.Param("id")
 	game, err := services.GetGameByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Game not found"})
+		services.HandleError(c, http.StatusNotFound, "Game not found")
 		return
 	}
 	c.JSON(http.StatusOK, game)
