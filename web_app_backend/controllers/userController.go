@@ -10,32 +10,37 @@ import (
 
 func CreateUser(c *gin.Context) {
 	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var err error
+
+	// Liaison des données JSON à l'objet `user`
+	if err = c.ShouldBindJSON(&user); err != nil {
 		services.HandleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// Valider les données de l'utilisateur
-	if err := services.ValidateStruct(&user); err != nil {
+	// Validation des données de l'utilisateur
+	if err = services.ValidateStruct(&user); err != nil {
 		services.HandleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// Hacher le mot de passe
-	hashedPassword, err := services.HashPassword(user.Password)
+	// Hachage du mot de passe
+	var hashedPassword string
+	hashedPassword, err = services.HashPassword(user.Password)
 	if err != nil {
 		services.HandleError(c, http.StatusInternalServerError, "Failed to hash password")
 		return
 	}
 	user.Password = hashedPassword
 
-	// Créer l'utilisateur
-	if err := services.CreateUser(&user); err != nil {
+	// Création de l'utilisateur
+	err = services.CreateUser(&user)
+	if err != nil {
 		services.HandleError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	// Répondre avec l'utilisateur créé
+	// Réponse avec l'utilisateur créé
 	c.JSON(http.StatusCreated, user)
 }
 

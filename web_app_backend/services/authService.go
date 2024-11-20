@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -17,14 +18,23 @@ func GenerateJWT(userID uint) (string, error) {
 }
 
 func ValidateJWT(tokenString string) (uint, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(_ *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 	if err != nil || !token.Valid {
 		return 0, err
 	}
 
-	claims := token.Claims.(jwt.MapClaims)
-	userID := uint(claims["userID"].(float64))
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return 0, errors.New("échec de la conversion des revendications du token")
+	}
+
+	userIDFloat, ok := claims["userID"].(float64)
+	if !ok {
+		return 0, errors.New("échec de la conversion de l'ID utilisateur")
+	}
+	userID := uint(userIDFloat)
+
 	return userID, nil
 }
