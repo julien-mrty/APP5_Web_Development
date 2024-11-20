@@ -1,22 +1,35 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import ConnectionPage from '../components/ConnectionPage.vue';
-import TheWelcome from '../components/TheWelcome.vue';
+import HomePage from '../components/HomePage.vue';
+import PlayPage from '../components/PlayPage.vue';
+import ScoresPage from '../components/ScoresPage.vue';
+
 
 const routes = [
   {
-    path: '/',
+    path: '/', // Default route
     name: 'ConnectionPage',
-    component: ConnectionPage,  // The connection page will be shown first
+    component: ConnectionPage, // This should render your ConnectionPage
   },
   {
-    path: '/welcome',
-    name: 'WelcomePage',
-    component: TheWelcome,
+    path: '/homepage',  
+    name: 'HomePage',
+    component: HomePage,
+  },
+  {
+    path: '/play',
+    name: 'PlayPage',
+    component: PlayPage,
+  },
+  {
+    path: '/scores',
+    name: 'ScoresPage',
+    component: ScoresPage,
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 
