@@ -35,3 +35,13 @@ func GetUserByID(id string) (*models.User, error) {
 	}
 	return &user, nil
 }
+
+// Get a user by email
+func GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	result := database.DB.Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		return nil, errors.New("user not found")
+	}
+	return &user, nil
+}
