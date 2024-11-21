@@ -14,24 +14,26 @@ import (
 var DB *gorm.DB
 
 // ConnectDB connects to the database and creates a new one if it doesn't exist
-func ConnectDB() {
-	var err error
-
+func ConnectDB() error {
 	// Configuration for connecting to MySQL without specifying a database
 	dsnWithoutDB := "root:@tcp(localhost:3306)/?charset=utf8mb4&parseTime=True&loc=Local"
 
 	// Open a basic SQL connection to create the database
 	sqlDB, err := sql.Open("mysql", dsnWithoutDB)
 	if err != nil {
-		log.Fatal("Error connecting to MySQL:", err)
+		return fmt.Errorf("error connecting to MySQL: %w", err)
 	}
-	defer sqlDB.Close() // Ensure the connection is closed after the operation
+	defer func() {
+		if closeErr := sqlDB.Close(); closeErr != nil {
+			log.Printf("warning: failed to close sqlDB: %v", closeErr)
+		}
+	}()
 
 	// Create the database if it doesn't exist
 	dbName := "bdd_jump_higher"
 	_, err = sqlDB.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", dbName))
 	if err != nil {
-		log.Fatal("Error creating the database:", err)
+		return fmt.Errorf("error creating the database: %w", err)
 	}
 	fmt.Println("Database successfully verified or created")
 
@@ -41,18 +43,23 @@ func ConnectDB() {
 	// Connect to the database using GORM and the new connection string
 	DB, err = gorm.Open(mysql.Open(dsnWithDB), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Error connecting to the database:", err)
+		return fmt.Errorf("error connecting to the database: %w", err)
 	}
 
 	// Call the function to migrate the tables
-	migrateTables()
+	if err := migrateTables(); err != nil {
+		return fmt.Errorf("error migrating tables: %w", err)
+	}
+
+	return nil
 }
 
-func migrateTables() {
+func migrateTables() error {
 	// Migrate the models to create the tables in the database
 	err := DB.AutoMigrate(&models.User{}, &models.Game{}, &models.Score{})
 	if err != nil {
-		log.Fatal("Error migrating tables:", err)
+		return err
 	}
 	fmt.Println("Table migration successful")
+	return nil
 }

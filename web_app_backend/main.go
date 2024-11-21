@@ -21,8 +21,10 @@ func main() {
 	// Apply CORS middleware globally
 	r.Use(middleware.CORSMiddleware())
 
-	// Initialisation de la base de données
-	database.ConnectDB()
+	// Attempt to connect to the database and handle any errors
+	if err := database.ConnectDB(); err != nil {
+		log.Fatalf("failed to initialize the database: %v", err)
+	}
 
 	// Configuration des routes
 	api.SetupRoutes(r)
