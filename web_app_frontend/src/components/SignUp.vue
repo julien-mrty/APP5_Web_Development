@@ -18,7 +18,7 @@
   </div>
 </template>
 
-  
+
 <script>
 export default {
   data() {
@@ -31,6 +31,7 @@ export default {
   },
   methods: {
     async handleSubmit() {
+      // Frontend validation for password mismatch
       if (this.password !== this.confirmPassword) {
         this.errorMessage = "Passwords do not match.";
         return;
@@ -56,15 +57,24 @@ export default {
 
           console.log("Sign-up successful. Token saved:", data.token);
 
-          // Redirect to the home page or a protected route
+          // Redirect to the home page
           this.$router.push("/home");
         } else {
           const error = await response.json();
-          this.errorMessage = error.message || "An error occurred during sign-up.";
+
+          // Handle specific backend errors
+          if (response.status === 409) {
+            this.errorMessage = "Username is already taken. Please choose another.";
+          } else if (response.status === 400) {
+            this.errorMessage = "Invalid input. Please check your details.";
+          } else {
+            this.errorMessage = error.message || "An error occurred during sign-up.";
+          }
         }
       } catch (error) {
-        this.errorMessage = "An error occurred. Please try again.";
-        console.error(error);
+        // Catch network or unexpected errors
+        this.errorMessage = "A network error occurred. Please try again.";
+        console.error("Sign-up error:", error);
       }
     },
     redirectToConnection() {
@@ -74,47 +84,53 @@ export default {
 };
 </script>
 
-  
-  <style scoped>
-  .signup-page {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-  label {
-    display: block;
-    margin: 10px 0 5px;
-  }
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-  }
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #218838;
-  }
-  .redirect-button {
-    margin-top: 15px;
-    background-color: #007bff;
-    color: #fff;
-  }
-  .redirect-button:hover {
-    background-color: #0056b3;
-  }
-  .error-message {
-    color: red;
-    margin-top: 10px;
-  }
-  </style>
-  
+
+<style scoped>
+.signup-page {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+.redirect-button {
+  margin-top: 15px;
+  background-color: #007bff;
+  color: #fff;
+}
+
+.redirect-button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+</style>
