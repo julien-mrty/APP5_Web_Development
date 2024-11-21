@@ -7,6 +7,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger" // Swagger middleware
 
 	_ "github.com/julien-mrty/Web_app_jump_higher/web_app_backend/docs" // Swagger docs
+	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/middleware"
+	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/services"
 )
 
 // @title Web App Jump Higher API
@@ -121,4 +123,69 @@ func SetupRoutes(r *gin.Engine) {
 	// @Success 200 {object} models.Score
 	// @Router /scores/{id} [get]
 	r.GET("/scores/:id", controllers.GetScoreByID)
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	//
+	r.GET("/protected", middleware.AuthMiddleware(), func(c *gin.Context) {
+		userID, _ := c.Get("userID")
+		c.JSON(200, gin.H{
+			"message": "You have access to this protected route",
+			"userID":  userID,
+		})
+	})
+
+	r.POST("/generate-token", func(c *gin.Context) {
+		var request struct {
+			UserID uint `json:"userID"`
+		}
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.JSON(400, gin.H{"error": "Invalid request"})
+			return
+		}
+
+		token, err := services.GenerateJWT(request.UserID)
+		if err != nil {
+			c.JSON(500, gin.H{"error": "Failed to generate token"})
+			return
+		}
+
+		c.JSON(200, gin.H{"token": token})
+	})
+
+	///////////////////////////////////////////////////////////////////::
+
+	// @Summary a modifier
+	// @Description Retrieve a specific score by its ID
+	// @Tags Scores
+	// @Produce json
+	// @Param id path int true "Score ID"
+	// @Success 200 {object} models.Score
+	// @Router /scores/{id} [post]
+	r.POST("/api/signup", controllers.Signup)
+
+	// @Summary a modifier
+	// @Description Retrieve a specific score by its ID
+	// @Tags Scores
+	// @Produce json
+	// @Param id path int true "Score ID"
+	// @Success 200 {object} models.Score
+	// @Router /scores/{id} [post]
+	r.POST("/api/login", controllers.Login)
+
+	// @Summary a modifier
+	// @Description Retrieve a specific score by its ID
+	// @Tags Scores
+	// @Produce json
+	// @Param id path int true "Score ID"
+	// @Success 200 {object} models.Score
+	// @Router /scores/{id} [post]
+	r.GET("/api/protected", middleware.AuthMiddleware(), func(c *gin.Context) {
+		userID, _ := c.Get("userID")
+		c.JSON(200, gin.H{
+			"message": "You have access to this protected route",
+			"userID":  userID,
+		})
+	})
+
 }

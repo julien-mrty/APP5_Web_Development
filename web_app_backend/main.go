@@ -13,6 +13,8 @@ import (
 func main() {
 
 	services.InitLogger()
+	services.InitValidator()
+
 	r := gin.Default()
 
 	// Initialisation de la base de données
@@ -23,6 +25,6 @@ func main() {
 
 	// Démarrer le serveur
 	if err := r.Run(":8080"); err != nil {
-		log.Fatal("Erreur de démarrage du serveur :", err)
+		log.Fatal("Error de démarrage du serveur :", err)
 	}
 }
