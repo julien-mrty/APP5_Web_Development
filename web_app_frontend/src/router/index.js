@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Connection from '../components/Log-in.vue';
 import Home from '../components/Home.vue';
-import Play from '../components/Play.vue';
-import Scores from '../components/Scores.vue';
+import Play from '../components/PlayGame.vue';
+import Scores from '../components/GameScores.vue';
 import SignUp from "../components/SignUp.vue";
 
 
@@ -24,14 +24,14 @@ const routes = [
     component: SignUp 
   },
   {
-    path: '/play',
-    name: 'Play',
+    path: '/playgame',
+    name: 'PlayGame',
     component: Play,
     meta: { requiresAuth: true }
   },
   {
-    path: '/scores',
-    name: 'Scores',
+    path: '/gamescores',
+    name: 'GameScores',
     component: Scores,
     meta: { requiresAuth: true }
   },

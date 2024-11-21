@@ -20,11 +20,11 @@ export default {
     const router = useRouter();
 
     const goToPlay = () => {
-      router.push("/play");
+      router.push("/playgame");
     };
 
     const goToViewScores = () => {
-      router.push("/scores");
+      router.push("/gamescores");
     };
 
     const logout = () => {
