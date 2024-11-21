@@ -13,6 +13,8 @@ import (
 func main() {
 
 	services.InitLogger()
+	services.InitValidator()
+
 	r := gin.Default()
 
 	// Initialisation de la base de données

@@ -11,5 +11,8 @@ func InitValidator() {
 }
 
 func ValidateStruct(data interface{}) error {
+	if validate == nil {
+		InitValidator() // Ensure the validator is initialized
+	}
 	return validate.Struct(data)
 }
