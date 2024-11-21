@@ -6,9 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/api"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/database"
+	_ "github.com/julien-mrty/Web_app_jump_higher/web_app_backend/docs"
+	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/services"
 )
 
 func main() {
+
+	services.InitLogger()
 	r := gin.Default()
 
 	// Initialisation de la base de données
