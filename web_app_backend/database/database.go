@@ -47,7 +47,8 @@ func ConnectDB() error {
 	}
 
 	// Call the function to migrate the tables
-	if err := migrateTables(); err != nil {
+	err = migrateTables()
+	if err != nil {
 		return fmt.Errorf("error migrating tables: %w", err)
 	}
 
