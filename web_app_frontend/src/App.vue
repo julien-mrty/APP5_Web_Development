@@ -1,17 +1,16 @@
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
+  <div>
     <!-- This is the new router-view, which dynamically displays the current route's component -->
     <router-view></router-view>
-  </main>
+  </div>
 </template>
+
+
+<script>
+export default {
+  name: "App",
+};
+</script>
 
 
 <style scoped>

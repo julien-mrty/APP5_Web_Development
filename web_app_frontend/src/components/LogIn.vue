@@ -15,6 +15,7 @@
   </div>
 </template>
 
+
 <script>
 import { ref } from "vue"; // Import ref for reactive variables
 import { useRouter } from "vue-router";
@@ -24,7 +25,7 @@ export default {
     const router = useRouter();
 
     // Reactive variables
-    const username = ref(""); // `ref` creates a reactive variable
+    const username = ref("");
     const password = ref("");
     const errorMessage = ref("");
 
@@ -36,15 +37,21 @@ export default {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            username: username.value, // Use `.value` to access ref variables
+            username: username.value,
             password: password.value,
           }),
         });
 
         if (response.ok) {
           const data = await response.json();
+
+          // Save the token to localStorage
+          localStorage.setItem("authToken", data.token);
+
           console.log("Login successful:", data);
-          router.push("/homepage");
+
+          // Redirect to the home page
+          router.push("/home");
         } else {
           const error = await response.json();
           errorMessage.value = error.message || "Invalid username or password.";
@@ -56,7 +63,6 @@ export default {
     };
 
     const goToSignUp = () => {
-      console.log("Navigating to sign up...");
       router.push("/signup");
     };
 
@@ -70,6 +76,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .connection-page {

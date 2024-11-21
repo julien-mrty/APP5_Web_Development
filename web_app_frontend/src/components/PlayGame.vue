@@ -3,24 +3,40 @@
       <h1>Game Play Page</h1>
       <div class="buttons">
         <button @click="goToHome">Home</button>
+        <button @click="logout" class="logout-button">Logout</button>
       </div>
     </div>
   </template>
   
   <script>
+  import { onMounted } from "vue"; // Import onMounted  
   import { useRouter } from "vue-router"; // Import useRouter
   
   export default {
-    name: "PlayPage",
+    name: "PlayGame",
     setup() {
       const router = useRouter(); // Get the router instance
   
       const goToHome = () => {
-        router.push("/homepage"); // Correct route path
+        router.push("/home"); // Correct route path
       };
+
+      const logout = () => {
+        localStorage.removeItem("authToken"); // Remove the token from storage
+        router.push("/"); // Redirect to login page
+      };
+
+      // Protect the route by checking the token
+      onMounted(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          router.push("/"); // Redirect to login if no token is found
+        }
+      });
   
       return {
         goToHome,
+        logout,
       };
     },
   };
@@ -49,5 +65,14 @@
   
   button:hover {
     background-color: #0056b3;
+  }
+
+  .logout-button {
+    background-color: #dc3545;
+    color: #fff;
+  }
+
+  .logout-button:hover {
+    background-color: #c82333;
   }
   </style>  
