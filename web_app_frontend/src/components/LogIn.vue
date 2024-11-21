@@ -86,15 +86,18 @@ export default {
   border: 1px solid #ccc;
   border-radius: 8px;
 }
+
 label {
   display: block;
   margin: 10px 0 5px;
 }
+
 input {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
 }
+
 button {
   width: 100%;
   padding: 10px;
@@ -102,21 +105,26 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
 button[type="submit"] {
   background-color: #007bff;
   color: #fff;
 }
+
 button[type="submit"]:hover {
   background-color: #0056b3;
 }
+
 .signup-button {
   margin-top: 10px;
   background-color: #28a745;
   color: #fff;
 }
+
 .signup-button:hover {
   background-color: #218838;
 }
+
 .error-message {
   color: red;
   margin-top: 10px;
