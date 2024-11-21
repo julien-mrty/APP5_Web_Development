@@ -13,15 +13,15 @@ const routes = [
     component: LogIn, // This should render your Connection
   },
   {
-    path: '/home',  
+    path: '/home',
     name: 'Home',
     component: Home,
     meta: { requiresAuth: true }
   },
-  { 
-    path: "/signup", 
+  {
+    path: "/signup",
     name: 'SignUp',
-    component: SignUp 
+    component: SignUp
   },
   {
     path: '/playgame',
