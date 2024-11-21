@@ -1,9 +1,3 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-// No need to import TheWelcome directly here anymore, because Vue Router will load it as needed
-</script>
-
-
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
