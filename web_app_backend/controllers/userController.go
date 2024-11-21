@@ -103,7 +103,7 @@ func Signup(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var request struct {
-		Email    string `json:"email" binding:"required"`
+		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
 
@@ -114,9 +114,9 @@ func Login(c *gin.Context) {
 	}
 
 	// Rechercher l'utilisateur par email
-	user, err := services.GetUserByEmail(request.Email)
+	user, err := services.GetUserByUserName(request.Username)
 	if err != nil {
-		services.HandleError(c, http.StatusUnauthorized, "Invalid email or password")
+		services.HandleError(c, http.StatusUnauthorized, "Invalid username or password")
 		return
 	}
 
