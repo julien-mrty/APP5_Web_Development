@@ -13,7 +13,7 @@
   import { useRouter } from "vue-router"; // Import useRouter
   
   export default {
-    name: "Play",
+    name: "PlayGame",
     setup() {
       const router = useRouter(); // Get the router instance
   
