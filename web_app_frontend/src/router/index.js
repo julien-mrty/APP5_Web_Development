@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ConnectionPage from '../components/ConnectionPage.vue';
-import HomePage from '../components/HomePage.vue';
-import PlayPage from '../components/PlayPage.vue';
-import ScoresPage from '../components/ScoresPage.vue';
+import ConnectionPage from '../components/Log-in.vue';
+import HomePage from '../components/Home.vue';
+import PlayPage from '../components/Play.vue';
+import ScoresPage from '../components/Scores.vue';
+import SignUpPage from "../components/SignUp.vue";
 
 
 const routes = [
@@ -15,6 +16,11 @@ const routes = [
     path: '/homepage',  
     name: 'HomePage',
     component: HomePage,
+  },
+  { 
+    path: "/signup", 
+    name: 'SignUpPage',
+    component: SignUpPage 
   },
   {
     path: '/play',

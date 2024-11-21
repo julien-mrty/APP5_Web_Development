@@ -1,0 +1,111 @@
+<template>
+    <div class="signup-page">
+      <h1>Sign Up</h1>
+      <form @submit.prevent="handleSubmit">
+        <label for="username">Username:</label>
+        <input v-model="username" id="username" type="text" required />
+  
+        <label for="password">Password:</label>
+        <input v-model="password" id="password" type="password" required />
+  
+        <label for="confirmPassword">Confirm Password:</label>
+        <input v-model="confirmPassword" id="confirmPassword" type="password" required />
+  
+        <button type="submit">Sign Up</button>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+      </form>
+      <button @click="redirectToConnection" class="redirect-button">Already have an account? Go to Login</button>
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    data() {
+      return {
+        username: "",
+        password: "",
+        confirmPassword: "",
+        errorMessage: null,
+      };
+    },
+    methods: {
+      async handleSubmit() {
+        if (this.password !== this.confirmPassword) {
+          this.errorMessage = "Passwords do not match.";
+          return;
+        }
+  
+        try {
+          const response = await fetch("http://your-backend-url/api/signup", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: this.username,
+              password: this.password,
+            }),
+          });
+  
+          if (response.ok) {
+            console.log("Sign-up successful");
+            this.$router.push("/connection"); // Redirect to connection page
+          } else {
+            const error = await response.json();
+            this.errorMessage = error.message || "An error occurred during sign-up.";
+          }
+        } catch (error) {
+          this.errorMessage = "An error occurred. Please try again.";
+          console.error(error);
+        }
+      },
+      redirectToConnection() {
+        this.$router.push("/"); // Redirect to the connection page
+      },
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .signup-page {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  label {
+    display: block;
+    margin: 10px 0 5px;
+  }
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #218838;
+  }
+  .redirect-button {
+    margin-top: 15px;
+    background-color: #007bff;
+    color: #fff;
+  }
+  .redirect-button:hover {
+    background-color: #0056b3;
+  }
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  </style>
+  
