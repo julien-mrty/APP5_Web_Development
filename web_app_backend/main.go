@@ -6,31 +6,47 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/api"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/database"
-	_ "github.com/julien-mrty/Web_app_jump_higher/web_app_backend/docs"
+	_ "github.com/julien-mrty/Web_app_jump_higher/web_app_backend/docs" // Swagger documentation initialization
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/middleware"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/services"
 )
 
-func main() {
+// @title Web App Jump Higher API
+// @version 0.1
+// @description This is the API documentation for the Web App Jump Higher backend.
+// @termsOfService http://Nanmarkalkab.com/terms/
 
+// @contact.name API La Mi
+// @contact.url http://xoxo.com/support
+// @contact.email support@xoxo.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /api/v0.1
+
+func main() {
+	// Initialize logging and validation services
 	services.InitLogger()
 	services.InitValidator()
 
+	// Create a Gin router instance
 	r := gin.Default()
 
-	// Apply CORS middleware globally
+	// Apply global middleware
 	r.Use(middleware.CORSMiddleware())
 
-	// Attempt to connect to the database and handle any errors
+	// Initialize the database
 	if err := database.ConnectDB(); err != nil {
-		log.Fatalf("failed to initialize the database: %v", err)
+		log.Fatalf("Failed to initialize the database: %v", err)
 	}
 
-	// Configuration des routes
+	// Setup application routes
 	api.SetupRoutes(r)
 
-	// Démarrer le serveur
+	// Start the server
 	if err := r.Run(":8080"); err != nil {
-		log.Fatal("Error de démarrage du serveur :", err)
+		log.Fatalf("Error starting the server: %v", err)
 	}
 }

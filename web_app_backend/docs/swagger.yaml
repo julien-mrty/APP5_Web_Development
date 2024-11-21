@@ -1,4 +1,208 @@
+basePath: /api/v0.1
+definitions:
+  models.Game:
+    properties:
+      difficulty:
+        type: string
+      id:
+        type: integer
+      levelName:
+        type: string
+    type: object
+  models.Score:
+    properties:
+      gameID:
+        type: integer
+      id:
+        type: integer
+      points:
+        type: integer
+      userID:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      id:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: support@xoxo.com
+    name: API La Mi
+    url: http://xoxo.com/support
+  description: This is the API documentation for the Web App Jump Higher backend.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://Nanmarkalkab.com/terms/
+  title: Web App Jump Higher API
+  version: "0.1"
+paths:
+  /games:
+    get:
+      description: Retrieve the list of all games
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Game'
+            type: array
+      summary: Get all games
+      tags:
+      - games
+    post:
+      consumes:
+      - application/json
+      description: Add a new game to the database
+      parameters:
+      - description: Game data
+        in: body
+        name: game
+        required: true
+        schema:
+          $ref: '#/definitions/models.Game'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Game'
+      summary: Create a new game
+      tags:
+      - games
+  /games/{id}:
+    get:
+      description: Retrieve a specific game by its ID
+      parameters:
+      - description: Game ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Game'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a game by ID
+      tags:
+      - games
+  /scores:
+    get:
+      description: Retrieve the list of all scores
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Score'
+            type: array
+      summary: Get all scores
+      tags:
+      - scores
+    post:
+      consumes:
+      - application/json
+      description: Add a new score to the database
+      parameters:
+      - description: Score data
+        in: body
+        name: score
+        required: true
+        schema:
+          $ref: '#/definitions/models.Score'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Score'
+      summary: Create a new score
+      tags:
+      - Scores
+  /scores/{id}:
+    get:
+      description: Retrieve a specific score by its ID
+      parameters:
+      - description: Score ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Score'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a score by ID
+      tags:
+      - scores
+  /users:
+    get:
+      description: Retrieve the list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get all users
+      tags:
+      - users
+  /users/{id}:
+    get:
+      description: Retrieve a specific user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a user by ID
+      tags:
+      - users
 swagger: "2.0"

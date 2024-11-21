@@ -1,7 +1,316 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is the API documentation for the Web App Jump Higher backend.",
+        "title": "Web App Jump Higher API",
+        "termsOfService": "http://Nanmarkalkab.com/terms/",
+        "contact": {
+            "name": "API La Mi",
+            "url": "http://xoxo.com/support",
+            "email": "support@xoxo.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "0.1"
     },
-    "paths": {}
+    "host": "localhost:8080",
+    "basePath": "/api/v0.1",
+    "paths": {
+        "/games": {
+            "get": {
+                "description": "Retrieve the list of all games",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Get all games",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Game"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a new game to the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Create a new game",
+                "parameters": [
+                    {
+                        "description": "Game data",
+                        "name": "game",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Game"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Game"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}": {
+            "get": {
+                "description": "Retrieve a specific game by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Get a game by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Game"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/scores": {
+            "get": {
+                "description": "Retrieve the list of all scores",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "scores"
+                ],
+                "summary": "Get all scores",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Score"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a new score to the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Scores"
+                ],
+                "summary": "Create a new score",
+                "parameters": [
+                    {
+                        "description": "Score data",
+                        "name": "score",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Score"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Score"
+                        }
+                    }
+                }
+            }
+        },
+        "/scores/{id}": {
+            "get": {
+                "description": "Retrieve a specific score by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "scores"
+                ],
+                "summary": "Get a score by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Score ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Score"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Retrieve the list of all users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "description": "Retrieve a specific user by their ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Game": {
+            "type": "object",
+            "properties": {
+                "difficulty": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "levelName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Score": {
+            "type": "object",
+            "properties": {
+                "gameID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }
