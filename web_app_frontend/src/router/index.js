@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ConnectionPage from '../components/Login.vue';
+import ConnectionPage from '../components/Log-in.vue';
 import HomePage from '../components/Home.vue';
 import PlayPage from '../components/Play.vue';
 import ScoresPage from '../components/Scores.vue';
