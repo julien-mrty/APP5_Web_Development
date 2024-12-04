@@ -33,20 +33,26 @@ func ValidateJWT(tokenString string) (uint, error) {
 	}
 
 	// Validate token claims
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		// Ensure the token is not expired
-		expiration := int64(claims["exp"].(float64))
-		if time.Now().Unix() > expiration {
-			return 0, errors.New("token has expired")
-		}
-
-		// Extract user ID
-		userIDFloat, ok := claims["userID"].(float64)
-		if !ok {
-			return 0, errors.New("invalid userID in token")
-		}
-		return uint(userIDFloat), nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return 0, errors.New("invalid token claims")
 	}
 
-	return 0, errors.New("invalid token")
+	// Ensure the expiration claim is valid
+	expClaim, ok := claims["exp"].(float64)
+	if !ok {
+		return 0, errors.New("invalid or missing expiration claim")
+	}
+	expiration := int64(expClaim)
+	if time.Now().Unix() > expiration {
+		return 0, errors.New("token has expired")
+	}
+
+	// Ensure the userID claim is valid
+	userIDFloat, userIDOk := claims["userID"].(float64)
+	if !userIDOk {
+		return 0, errors.New("invalid or missing userID in token")
+	}
+
+	return uint(userIDFloat), nil
 }
