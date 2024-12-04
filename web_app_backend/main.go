@@ -24,7 +24,7 @@ import (
 // @license.url https://opensource.org/licenses/MIT
 
 // @host localhost:8080
-// @BasePath /api/v0.1
+// @BasePath /api
 
 func main() {
 	// Initialize logging and validation services

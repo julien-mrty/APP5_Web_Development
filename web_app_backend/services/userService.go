@@ -5,6 +5,7 @@ import (
 
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/database"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/models"
+	"gorm.io/gorm"
 )
 
 // Get all users
@@ -17,9 +18,23 @@ func GetAllUsers() ([]models.User, error) {
 	return users, nil
 }
 
-// Create a new user
+// CreateUser creates a new user and returns an error if the username already exists
 func CreateUser(user *models.User) error {
-	result := database.DB.Create(user)
+	// Check if the username already exists
+	var existingUser models.User
+	result := database.DB.Where("username = ?", user.Username).First(&existingUser)
+	if result.Error == nil {
+		// Username already exists
+		return errors.New("username already exists")
+	}
+
+	// If the error is not "record not found", return the error
+	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return result.Error
+	}
+
+	// Create the new user
+	result = database.DB.Create(user)
 	if result.Error != nil {
 		return result.Error
 	}

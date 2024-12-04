@@ -23,16 +23,19 @@ func CreateUser(c *gin.Context) {
 	var user models.User
 	var err error
 
+	// Bind JSON data to the user struct
 	if err = c.ShouldBindJSON(&user); err != nil {
 		services.HandleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
+	// Validate user data
 	if err = services.ValidateStruct(&user); err != nil {
 		services.HandleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
+	// Hash the user's password
 	hashedPassword, err := services.HashPassword(user.Password)
 	if err != nil {
 		services.HandleError(c, http.StatusInternalServerError, "Failed to hash password")
@@ -40,12 +43,20 @@ func CreateUser(c *gin.Context) {
 	}
 	user.Password = hashedPassword
 
+	// Attempt to create the user
 	err = services.CreateUser(&user)
 	if err != nil {
+		if err.Error() == "username already exists" {
+			// Return a 409 Conflict if the username is taken
+			c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})
+			return
+		}
+		// Handle other errors
 		services.HandleError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
+	// Return the created user
 	c.JSON(http.StatusCreated, user)
 }
 
@@ -145,22 +156,37 @@ func UpdateUser(c *gin.Context) {
 // @Param user body models.User true "Signup data"
 // @Success 201 {object} map[string]string
 // @Failure 400 {object} map[string]string
+// @Failure 409 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /api/signup [post]
+// @Router /api/auth/signup [post]
 func Signup(c *gin.Context) {
 	var user models.User
 	var err error
 
+	// Bind incoming JSON to user struct
 	if err = c.ShouldBindJSON(&user); err != nil {
-		services.HandleError(c, http.StatusBadRequest, err.Error())
+		services.HandleError(c, http.StatusBadRequest, "Invalid input")
 		return
 	}
 
+	// Validate the user input
 	if err = services.ValidateStruct(&user); err != nil {
-		services.HandleError(c, http.StatusBadRequest, err.Error())
+		services.HandleError(c, http.StatusBadRequest, "Validation error: "+err.Error())
 		return
 	}
 
+	// Check if username already exists
+	existingUser, err := services.GetUserByUserName(user.Username)
+	if existingUser != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})
+		return
+	} else if err != nil && err.Error() != "user not found" {
+		// Handle unexpected errors from the database
+		services.HandleError(c, http.StatusInternalServerError, "An unexpected error occurred: "+err.Error())
+		return
+	}
+
+	// Hash the user's password
 	hashedPassword, err := services.HashPassword(user.Password)
 	if err != nil {
 		services.HandleError(c, http.StatusInternalServerError, "Failed to hash password")
@@ -168,12 +194,14 @@ func Signup(c *gin.Context) {
 	}
 	user.Password = hashedPassword
 
+	// Attempt to create the user in the database
 	err = services.CreateUser(&user)
 	if err != nil {
-		services.HandleError(c, http.StatusInternalServerError, err.Error())
+		services.HandleError(c, http.StatusInternalServerError, "Failed to create user: "+err.Error())
 		return
 	}
 
+	// Respond with success
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
@@ -183,17 +211,14 @@ func Signup(c *gin.Context) {
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param credentials body struct{Username string; Password string} true "Login credentials"
+// @Param credentials body models.User true "Login credentials"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /api/login [post]
 func Login(c *gin.Context) {
-	var request struct {
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required"`
-	}
+	var request models.User
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		services.HandleError(c, http.StatusBadRequest, "Invalid request")
