@@ -74,11 +74,11 @@ jobs:
 
       - name: Build and Start Containers
         run: docker-compose up --build -d
+        working-directory: ./integration
           
       - name: Run User Flow Test
-        run: |
-          cd ./github/workflows  # Navigate to the directory where test_user_flow.sh is located
-          bash test_user_flow.sh  # Run the script
+        run: bash test_user_flow.sh
+        working-directory: ./integration
 
       - name: Stop and Clean Up
         run: docker-compose down
