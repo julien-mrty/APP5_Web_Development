@@ -77,6 +77,7 @@ jobs:
           
       - name: Run User Flow Test
         run: bash test_user_flow.sh
+        working-directory: ./github/workflows
 
       - name: Stop and Clean Up
         run: docker-compose down
