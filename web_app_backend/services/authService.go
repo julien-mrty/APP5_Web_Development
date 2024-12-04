@@ -17,24 +17,36 @@ func GenerateJWT(userID uint) (string, error) {
 	return token.SignedString(jwtKey)
 }
 
+// ValidateJWT parses and validates a JWT token
 func ValidateJWT(tokenString string) (uint, error) {
-	token, err := jwt.Parse(tokenString, func(_ *jwt.Token) (interface{}, error) {
+	// Parse the JWT token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Ensure the signing method is as expected
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
 		return jwtKey, nil
 	})
-	if err != nil || !token.Valid {
-		return 0, err
+
+	if err != nil {
+		return 0, err // Return error if token parsing fails
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return 0, errors.New("échec de la conversion des revendications du token")
+	// Validate token claims
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// Ensure the token is not expired
+		expiration := int64(claims["exp"].(float64))
+		if time.Now().Unix() > expiration {
+			return 0, errors.New("token has expired")
+		}
+
+		// Extract user ID
+		userIDFloat, ok := claims["userID"].(float64)
+		if !ok {
+			return 0, errors.New("invalid userID in token")
+		}
+		return uint(userIDFloat), nil
 	}
 
-	userIDFloat, ok := claims["userID"].(float64)
-	if !ok {
-		return 0, errors.New("échec de la conversion de l'ID utilisateur")
-	}
-	userID := uint(userIDFloat)
-
-	return userID, nil
+	return 0, errors.New("invalid token")
 }

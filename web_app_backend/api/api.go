@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/controllers"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/middleware"
@@ -14,7 +16,7 @@ func SetupRoutes(r *gin.Engine) {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// API version 1 group
-	v1 := r.Group("/api/v1")
+	v1 := r.Group("/api")
 	{
 		// Users routes
 		users := v1.Group("/users")
@@ -41,13 +43,25 @@ func SetupRoutes(r *gin.Engine) {
 			scores.POST("", controllers.CreateScore)    // Create a new score
 			scores.GET(":id", controllers.GetScoreByID) // Get score by ID
 		}
+
+		// Authentication routes
+		auth := v1.Group("/auth")
+		{
+			auth.POST("/signup", controllers.Signup) // User signup
+			auth.POST("/login", controllers.Login)   // User login
+		}
 	}
 
 	// Protected route example
-	r.GET("/api/protected", middleware.AuthMiddleware(), func(c *gin.Context) {
-		userID, _ := c.Get("userID")
-		c.JSON(200, gin.H{
-			"message": "You have access to this protected route",
+	r.GET("/api/v1/protected", middleware.AuthMiddleware(), func(c *gin.Context) {
+		userID, exists := c.Get("userID")
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unable to retrieve userID"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Access granted",
 			"userID":  userID,
 		})
 	})
