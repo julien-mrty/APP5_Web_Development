@@ -76,8 +76,7 @@ jobs:
         run: docker-compose up --build -d
           
       - name: Run User Flow Test
-        run: bash test_user_flow.sh
-        working-directory: ./github/workflows
+        run: bash ./github/workflows/test_user_flow.sh
 
       - name: Stop and Clean Up
         run: docker-compose down
