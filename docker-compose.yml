@@ -22,6 +22,12 @@ services:
       - "8081:8081"
     depends_on:
       - mysql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/users"]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 5s
 
   mysql:
     image: mysql:8.0
