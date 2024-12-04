@@ -77,9 +77,9 @@ jobs:
 
       - name: Smoke Test - Test Endpoints
         run: |
-          curl -f http://localhost:8080/endpoint1 || exit 1
-          curl -f http://localhost:8080/endpoint2 || exit 1
-          curl -f http://localhost:8080/endpoint3 || exit 1
+          curl -f http://localhost:8080 || exit 1
+          curl -f http://localhost:8081 || exit 1
+          curl -f http://localhost:3306 || exit 1
           
       - name: Run User Flow Test
         run: bash test_user_flow.sh
