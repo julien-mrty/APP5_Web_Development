@@ -14,10 +14,10 @@ func getAllScoresWrapper() (interface{}, error) {
 // Get all scores
 // @Summary Get all scores
 // @Description Retrieve the list of all scores
-// @Tags scores
+// @Tags Scores
 // @Produce json
 // @Success 200 {array} models.Score
-// @Router /scores [get]
+// @Router /api/scores [get]
 func GetAllScores(c *gin.Context) {
 	helpers.HandleGetAll(c, getAllScoresWrapper)
 }
@@ -34,7 +34,7 @@ func getScoreByIDWrapper(id string) (interface{}, error) {
 // @Produce json
 // @Param score body models.Score true "Score data"
 // @Success 201 {object} models.Score
-// @Router /scores [post]
+// @Router /api/scores [post]
 func CreateScore(c *gin.Context) {
 	helpers.HandleCreate(c, services.CreateScore)
 }
@@ -42,7 +42,7 @@ func CreateScore(c *gin.Context) {
 // Get a score by ID
 // @Summary Get a score by ID
 // @Description Retrieve a specific score by its ID
-// @Tags scores
+// @Tags Scores
 // @Produce json
 // @Param id path int true "Score ID"
 // @Success 200 {object} models.Score

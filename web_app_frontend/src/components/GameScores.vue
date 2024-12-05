@@ -26,6 +26,34 @@ export default {
       router.push("/"); // Redirect to login page
     };
 
+    // Fetch scores securely
+    const fetchScores = async () => {
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        router.push("/");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8080/api/scores", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const scores = await response.json();
+          console.log("Fetched scores:", scores);
+        } else {
+          console.error("Failed to fetch scores:", await response.json());
+        }
+      } catch (error) {
+        console.error("Error fetching scores:", error);
+      }
+    };
+
     // Protect the route by checking the token
     onMounted(() => {
       const token = localStorage.getItem("authToken");

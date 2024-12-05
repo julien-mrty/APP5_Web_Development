@@ -1,4 +1,4 @@
-basePath: /api
+basePath: /
 definitions:
   models.Game:
     properties:
@@ -43,7 +43,7 @@ info:
   title: Web App Jump Higher API
   version: "0.1"
 paths:
-  /api/login:
+  /api/auth/login:
     post:
       consumes:
       - application/json
@@ -85,7 +85,7 @@ paths:
       summary: User login
       tags:
       - Auth
-  /api/signup:
+  /api/auth/signup:
     post:
       consumes:
       - application/json
@@ -112,6 +112,12 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
@@ -121,7 +127,7 @@ paths:
       summary: User signup
       tags:
       - Auth
-  /games:
+  /api/games:
     get:
       description: Retrieve the list of all games
       produces:
@@ -135,7 +141,7 @@ paths:
             type: array
       summary: Get all games
       tags:
-      - games
+      - Games
     post:
       consumes:
       - application/json
@@ -156,8 +162,8 @@ paths:
             $ref: '#/definitions/models.Game'
       summary: Create a new game
       tags:
-      - games
-  /games/{id}:
+      - Games
+  /api/games/{id}:
     get:
       description: Retrieve a specific game by its ID
       parameters:
@@ -181,8 +187,8 @@ paths:
             type: object
       summary: Get a game by ID
       tags:
-      - games
-  /scores:
+      - Games
+  /api/scores:
     get:
       description: Retrieve the list of all scores
       produces:
@@ -196,7 +202,7 @@ paths:
             type: array
       summary: Get all scores
       tags:
-      - scores
+      - Scores
     post:
       consumes:
       - application/json
@@ -218,32 +224,7 @@ paths:
       summary: Create a new score
       tags:
       - Scores
-  /scores/{id}:
-    get:
-      description: Retrieve a specific score by its ID
-      parameters:
-      - description: Score ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Score'
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Get a score by ID
-      tags:
-      - scores
-  /users:
+  /api/users:
     get:
       description: Retrieve the list of all users
       produces:
@@ -297,7 +278,7 @@ paths:
       summary: Create a new user
       tags:
       - Users
-  /users/{id}:
+  /api/users/{id}:
     delete:
       description: Delete a user by their ID
       parameters:
@@ -400,4 +381,29 @@ paths:
       summary: Update a user by ID
       tags:
       - Users
+  /scores/{id}:
+    get:
+      description: Retrieve a specific score by its ID
+      parameters:
+      - description: Score ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Score'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a score by ID
+      tags:
+      - Scores
 swagger: "2.0"
