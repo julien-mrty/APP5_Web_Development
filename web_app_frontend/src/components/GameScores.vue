@@ -2,10 +2,9 @@
   <div class="scores-page">
     <h1>See your scores here</h1>
     <div v-if="scores.length > 0">
-      <h2>Your Scores:</h2>
       <ul>
-        <li v-for="(score, index) in scores" :key="index">
-          {{ score.game }}: {{ score.points }} points
+        <li v-for="(scores, index) in scores" :key="index">
+        {{ scores.Points }}   {{ new Date(scores.CreatedAt).toLocaleString() }}
         </li>
       </ul>
     </div>
@@ -56,13 +55,16 @@ export default {
         });
 
         if (response.ok) {
-          scores.value = await response.json(); // Update the scores reactive variable
+          scores.value = await response.json(); // Update the scores array
+          console.log("Scores fetched successfully:", scores.value);
         } else {
-          console.error("Failed to fetch scores:", await response.json());
+          const errorData = await response.json();
+          console.error("Failed to fetch scores:", errorData);
         }
       } catch (error) {
         console.error("Error fetching scores:", error);
       }
+
     };
 
     // Protect the route and fetch scores on mount

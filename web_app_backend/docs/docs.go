@@ -594,6 +594,9 @@ const docTemplate = `{
         "models.Score": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "gameID": {
                     "type": "integer"
                 },

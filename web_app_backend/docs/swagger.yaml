@@ -11,6 +11,8 @@ definitions:
     type: object
   models.Score:
     properties:
+      createdAt:
+        type: string
       gameID:
         type: integer
       id:
