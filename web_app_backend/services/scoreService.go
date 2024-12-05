@@ -35,3 +35,12 @@ func GetScoreByID(id string) (*models.Score, error) {
 	}
 	return &score, nil
 }
+
+func GetScoresByUserID(userID uint) ([]models.Score, error) {
+	var scores []models.Score
+	result := database.DB.Where("user_id = ?", userID).Find(&scores)
+	if result.Error != nil {
+		return nil, errors.New("score not found")
+	}
+	return scores, nil
+}

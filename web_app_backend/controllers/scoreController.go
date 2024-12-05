@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/helpers"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/services"
@@ -11,15 +13,27 @@ func getAllScoresWrapper() (interface{}, error) {
 	return services.GetAllScores()
 }
 
-// Get all scores
-// @Summary Get all scores
-// @Description Retrieve the list of all scores
+// Get all scores for the logged-in user
+// @Summary Get user scores
+// @Description Retrieve the list of scores for the authenticated user
 // @Tags Scores
 // @Produce json
 // @Success 200 {array} models.Score
 // @Router /api/scores [get]
 func GetAllScores(c *gin.Context) {
-	helpers.HandleGetAll(c, getAllScoresWrapper)
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	scores, err := services.GetScoresByUserID(userID.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch scores"})
+		return
+	}
+
+	c.JSON(http.StatusOK, scores)
 }
 
 // Wrapper for services.GetScoreByID to match the expected function signature for HandleGetByID
