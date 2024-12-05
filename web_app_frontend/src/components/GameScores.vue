@@ -1,6 +1,17 @@
 <template>
   <div class="scores-page">
     <h1>See your scores here</h1>
+    <div v-if="scores.length > 0">
+      <h2>Your Scores:</h2>
+      <ul>
+        <li v-for="(score, index) in scores" :key="index">
+          {{ score.game }}: {{ score.points }} points
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No scores found.</p>
+    </div>
     <div class="buttons">
       <button @click="goToHome">Home</button>
       <button @click="logout" class="logout-button">Logout</button>
@@ -9,16 +20,17 @@
 </template>
 
 <script>
-import { onMounted } from "vue"; // Import onMounted
-import { useRouter } from "vue-router"; // Import useRouter
+import { ref, onMounted } from "vue"; // Import ref for reactivity and onMounted for lifecycle hook
+import { useRouter } from "vue-router";
 
 export default {
   name: "GameScores",
   setup() {
     const router = useRouter(); // Get the router instance
+    const scores = ref([]); // Reactive variable to store scores
 
     const goToHome = () => {
-      router.push("/home"); // Correct route path
+      router.push("/home"); // Navigate to home page
     };
 
     const logout = () => {
@@ -44,8 +56,7 @@ export default {
         });
 
         if (response.ok) {
-          const scores = await response.json();
-          console.log("Fetched scores:", scores);
+          scores.value = await response.json(); // Update the scores reactive variable
         } else {
           console.error("Failed to fetch scores:", await response.json());
         }
@@ -54,17 +65,20 @@ export default {
       }
     };
 
-    // Protect the route by checking the token
+    // Protect the route and fetch scores on mount
     onMounted(() => {
       const token = localStorage.getItem("authToken");
       if (!token) {
         router.push("/"); // Redirect to login if no token is found
+      } else {
+        fetchScores(); // Fetch scores if the token is valid
       }
     });
 
     return {
       goToHome,
       logout,
+      scores, 
     };
   },
 };
