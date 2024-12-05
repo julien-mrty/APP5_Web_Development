@@ -8,11 +8,6 @@ import (
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/services"
 )
 
-// Wrapper for services.GetAllScores to match the expected function signature for HandleGetAll
-func getAllScoresWrapper() (interface{}, error) {
-	return services.GetAllScores()
-}
-
 // Get all scores for the logged-in user
 // @Summary Get user scores
 // @Description Retrieve the list of scores for the authenticated user
@@ -21,15 +16,22 @@ func getAllScoresWrapper() (interface{}, error) {
 // @Success 200 {array} models.Score
 // @Router /api/scores [get]
 func GetAllScores(c *gin.Context) {
-	userID, exists := c.Get("userID")
+	userIDValue, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
-	scores, err := services.GetScoresByUserID(userID.(uint))
+	// Explicit type assertion with error handling
+	userID, ok := userIDValue.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse userID"})
+		return
+	}
+
+	scores, err := services.GetScoresByUserID(userID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch scores"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
