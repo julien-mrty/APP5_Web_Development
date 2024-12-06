@@ -14,10 +14,10 @@ func getAllGamesWrapper() (interface{}, error) {
 // Get all games
 // @Summary Get all games
 // @Description Retrieve the list of all games
-// @Tags games
+// @Tags Games
 // @Produce json
 // @Success 200 {array} models.Game
-// @Router /games [get]
+// @Router /api/games [get]
 func GetAllGames(c *gin.Context) {
 	helpers.HandleGetAll(c, getAllGamesWrapper)
 }
@@ -29,24 +29,24 @@ func getGameByIDWrapper(id string) (interface{}, error) {
 
 // @Summary Create a new game
 // @Description Add a new game to the database
-// @Tags games
+// @Tags Games
 // @Accept json
 // @Produce json
 // @Param game body models.Game true "Game data"
 // @Success 201 {object} models.Game
-// @Router /games [post]
+// @Router /api/games [post]
 func CreateGame(c *gin.Context) {
 	helpers.HandleCreate(c, services.CreateGame)
 }
 
 // @Summary Get a game by ID
 // @Description Retrieve a specific game by its ID
-// @Tags games
+// @Tags Games
 // @Produce json
 // @Param id path int true "Game ID"
 // @Success 200 {object} models.Game
 // @Failure 404 {object} map[string]string
-// @Router /games/{id} [get]
+// @Router /api/games/{id} [get]
 func GetGameByID(c *gin.Context) {
 	helpers.HandleGetByID(c, "id", getGameByIDWrapper)
 }

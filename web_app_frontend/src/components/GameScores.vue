@@ -1,6 +1,16 @@
 <template>
   <div class="scores-page">
     <h1>See your scores here</h1>
+    <div v-if="scores.length > 0">
+      <ul>
+        <li v-for="(scores, index) in scores" :key="index">
+        {{ scores.Points }}   {{ new Date(scores.CreatedAt).toLocaleString() }}
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No scores found.</p>
+    </div>
     <div class="buttons">
       <button @click="goToHome">Home</button>
       <button @click="logout" class="logout-button">Logout</button>
@@ -9,16 +19,17 @@
 </template>
 
 <script>
-import { onMounted } from "vue"; // Import onMounted
-import { useRouter } from "vue-router"; // Import useRouter
+import { ref, onMounted } from "vue"; // Import ref for reactivity and onMounted for lifecycle hook
+import { useRouter } from "vue-router";
 
 export default {
   name: "GameScores",
   setup() {
     const router = useRouter(); // Get the router instance
+    const scores = ref([]); // Reactive variable to store scores
 
     const goToHome = () => {
-      router.push("/home"); // Correct route path
+      router.push("/home"); // Navigate to home page
     };
 
     const logout = () => {
@@ -26,17 +37,50 @@ export default {
       router.push("/"); // Redirect to login page
     };
 
-    // Protect the route by checking the token
+    // Fetch scores securely
+    const fetchScores = async () => {
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        router.push("/");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8080/api/scores", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          scores.value = await response.json(); // Update the scores array
+          console.log("Scores fetched successfully:", scores.value);
+        } else {
+          const errorData = await response.json();
+          console.error("Failed to fetch scores:", errorData);
+        }
+      } catch (error) {
+        console.error("Error fetching scores:", error);
+      }
+
+    };
+
+    // Protect the route and fetch scores on mount
     onMounted(() => {
       const token = localStorage.getItem("authToken");
       if (!token) {
         router.push("/"); // Redirect to login if no token is found
+      } else {
+        fetchScores(); // Fetch scores if the token is valid
       }
     });
 
     return {
       goToHome,
       logout,
+      scores, 
     };
   },
 };
