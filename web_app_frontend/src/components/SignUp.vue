@@ -38,8 +38,6 @@ export default {
       }
 
       try {
-        console.log('API URL is:', process.env.VUE_APP_API_URL);
-
         const response = await fetch("/api/auth/signup", {
           method: "POST",
           headers: {

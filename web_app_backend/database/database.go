@@ -23,7 +23,6 @@ func ConnectDB() error {
 	dbName := os.Getenv("DB_NAME")
 
 	// Configuration for connecting to MySQL without specifying a database
-	//dsnWithoutDB := "root:@tcp(localhost:3306)/?charset=utf8mb4&parseTime=True&loc=Local"
 	dsnWithoutDB := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPass, dbHost, dbPort)
 
 	// Open a basic SQL connection to create the database
@@ -45,7 +44,6 @@ func ConnectDB() error {
 	fmt.Println("Database successfully verified or created")
 
 	// Reconfigure the connection string to include the newly created database
-	//dsnWithDB := fmt.Sprintf("root:@tcp(localhost:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbName)
 	dsnWithDB := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPass, dbHost, dbPort, dbName)
 
 	// Connect to the database using GORM and the new connection string
