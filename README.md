@@ -12,11 +12,11 @@ Docker and Docker Compose installed.
 
 ### Getting Started
 
-1) Clone the Repository
+1) **Clone the Repository:**<br />
 `git clone https://github.com/julien-mrty/Web_app_jump_higher.git`<br />
 `cd Web_app_jump_higher`<br />
 
-2) Build and Start the Containers
+2) **Build and Start the Containers:**<br />
 From the project root directory (where docker-compose.yml is located), run:<br />
 `docker-compose build`<br />
 `docker-compose up`<br />
@@ -24,22 +24,22 @@ This will:<br />
 Build the frontend, backend, and database images.<br />
 Start the services and link them together using Docker’s internal network.<br />
 
-3) Accessing the Application
+3) **Accessing the Application:**<br />
 Once the containers are up, the application will be available at:<br />
 Frontend: `http://localhost:8080` <br />
 The frontend will communicate with the backend through the configured proxy. The backend runs internally on port 8081, and MySQL on 3306, but you only need to interact with the frontend URL above.
 
-4) Stopping the Application
-To stop the containers, press Ctrl+C in the terminal where docker-compose up is running. To remove containers and associated networks, run:
-`docker-compose down`
+4) **Stopping the Application:**<br />
+To stop the containers, press Ctrl+C in the terminal where docker-compose up is running. To remove containers and associated networks, run:<br />
+`docker-compose down`<br />
 
 ### Notes
-- Database Persistence:
+- **Database Persistence:**<br />
 A Docker volume is used for MySQL data persistence. This ensures data is not lost when you stop and remove the containers. If you want a fresh start, you can remove the volume:<br />
 `docker-compose down -v`<br />
 This will remove all volumes and thus delete the database data.<br />
 
-- Rebuilding After Changes:<br />
+- **Rebuilding After Changes:**<br />
 If you make changes to the code, run:<br />
 `docker-compose build`<br />
 `docker-compose up`<br />
