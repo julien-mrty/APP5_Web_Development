@@ -59,3 +59,25 @@ jobs:
       - name: Run golangci-lint
         run: golangci-lint run --verbose
         working-directory: ./web_app_backend
+
+  Integration_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Build and Start Containers
+        run: docker-compose up --build -d
+          
+      - name: Run User Flow Test
+        run: bash test_user_flow.sh
+        working-directory: ./integration
+
+      - name: Stop and Clean Up
+        run: docker-compose down
