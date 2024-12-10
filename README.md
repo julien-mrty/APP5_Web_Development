@@ -12,11 +12,11 @@ Docker and Docker Compose installed.
 
 ### Getting Started
 
-1) **Clone the Repository**<br />
+1) **Clone the Repository:**<br />
 `git clone https://github.com/julien-mrty/Web_app_jump_higher.git`<br />
 `cd Web_app_jump_higher`<br />
 
-2) **Build and Start the Containers**<br />
+2) **Build and Start the Containers:**<br />
 From the project root directory (where docker-compose.yml is located), run:<br />
 `docker-compose build`<br />
 `docker-compose up`<br />
@@ -24,12 +24,12 @@ This will:<br />
 Build the frontend, backend, and database images.<br />
 Start the services and link them together using Docker’s internal network.<br />
 
-3) **Accessing the Application**<br />
+3) **Accessing the Application:**<br />
 Once the containers are up, the application will be available at:<br />
 Frontend: `http://localhost:8080` <br />
 The frontend will communicate with the backend through the configured proxy. The backend runs internally on port 8081, and MySQL on 3306, but you only need to interact with the frontend URL above.
 
-4) **Stopping the Application**<br />
+4) **Stopping the Application:**<br />
 To stop the containers, press Ctrl+C in the terminal where docker-compose up is running. To remove containers and associated networks, run:<br />
 `docker-compose down`<br />
 
