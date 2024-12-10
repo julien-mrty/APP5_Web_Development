@@ -1,12 +1,19 @@
 services:
-  frontend:
-    build:
-      context: ./web_app_frontend
-      dockerfile: ./Dockerfile
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: mydatabase
     ports:
-      - "8080:80"  # Mapping container port 80 (Nginx) to host port 8080
-    depends_on:
-      - backend
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   backend:
     build:
@@ -17,27 +24,21 @@ services:
       - DB_PORT=3306
       - DB_USER=root
       - DB_PASSWORD=my-secret-pw
-      - DB_NAME=mydatabase
+      - DB_NAME=bdd_jump_higher
     ports:
       - "8081:8081"
     depends_on:
-      - mysql
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/api/users"]
-      interval: 10s
-      retries: 10
-      start_period: 10s
-      timeout: 5s
+      mysql:
+        condition: service_healthy
 
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: mydatabase
+  frontend:
+    build:
+      context: ./web_app_frontend
+      dockerfile: ./Dockerfile
     ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
+      - "8080:80"  # Mapping container port 80 (Nginx) to host port 8080
+    depends_on:
+      - backend
 
 volumes:
   mysql-data:

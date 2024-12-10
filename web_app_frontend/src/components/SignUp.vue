@@ -38,7 +38,9 @@ export default {
       }
 
       try {
-        const response = await fetch("http://localhost:8080/api/auth/signup", {
+        console.log('API URL is:', process.env.VUE_APP_API_URL);
+
+        const response = await fetch("/api/auth/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

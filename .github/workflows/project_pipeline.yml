@@ -74,7 +74,6 @@ jobs:
 
       - name: Build and Start Containers
         run: docker-compose up --build -d
-        working-directory: ./integration
           
       - name: Run User Flow Test
         run: bash test_user_flow.sh

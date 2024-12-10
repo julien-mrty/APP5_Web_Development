@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/api"
@@ -38,6 +39,15 @@ func main() {
 	r.Use(middleware.CORSMiddleware())
 
 	// Initialize the database
+	for i := 0; i < 10; i++ {
+    err := database.ConnectDB()
+    if err == nil {
+        break
+    }
+    log.Printf("Database not ready. Retrying in 5 seconds... (%d/10)", i+1)
+    time.Sleep(5 * time.Second)
+	}
+
 	if err := database.ConnectDB(); err != nil {
 		log.Fatalf("Failed to initialize the database: %v", err)
 	}
@@ -46,7 +56,7 @@ func main() {
 	api.SetupRoutes(r)
 
 	// Start the server
-	if err := r.Run(":8080"); err != nil {
+	if err := r.Run(":8081"); err != nil {
 		log.Fatalf("Error starting the server: %v", err)
 	}
 }
