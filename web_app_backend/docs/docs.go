@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/login": {
+        "/api/auth/login": {
             "post": {
                 "description": "Authenticate a user and return a JWT token",
                 "consumes": [
@@ -88,7 +88,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/signup": {
+        "/api/auth/signup": {
             "post": {
                 "description": "Create a new user account",
                 "consumes": [
@@ -131,6 +131,15 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -143,14 +152,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/games": {
+        "/api/games": {
             "get": {
                 "description": "Retrieve the list of all games",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "games"
+                    "Games"
                 ],
                 "summary": "Get all games",
                 "responses": {
@@ -174,7 +183,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "games"
+                    "Games"
                 ],
                 "summary": "Create a new game",
                 "parameters": [
@@ -198,14 +207,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/games/{id}": {
+        "/api/games/{id}": {
             "get": {
                 "description": "Retrieve a specific game by its ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "games"
+                    "Games"
                 ],
                 "summary": "Get a game by ID",
                 "parameters": [
@@ -236,14 +245,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/scores": {
+        "/api/scores": {
             "get": {
                 "description": "Retrieve the list of all scores",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "scores"
+                    "Scores"
                 ],
                 "summary": "Get all scores",
                 "responses": {
@@ -291,45 +300,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/scores/{id}": {
-            "get": {
-                "description": "Retrieve a specific score by its ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "scores"
-                ],
-                "summary": "Get a score by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Score ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Score"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
+        "/api/users": {
             "get": {
                 "description": "Retrieve the list of all users",
                 "produces": [
@@ -411,7 +382,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}": {
+        "/api/users/{id}": {
             "get": {
                 "description": "Retrieve a specific user by their ID",
                 "produces": [
@@ -565,6 +536,44 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/scores/{id}": {
+            "get": {
+                "description": "Retrieve a specific score by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Scores"
+                ],
+                "summary": "Get a score by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Score ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Score"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -585,6 +594,9 @@ const docTemplate = `{
         "models.Score": {
             "type": "object",
             "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
                 "gameID": {
                     "type": "integer"
                 },
@@ -620,7 +632,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1",
 	Host:             "localhost:8080",
-	BasePath:         "/api",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Web App Jump Higher API",
 	Description:      "This is the API documentation for the Web App Jump Higher backend.",

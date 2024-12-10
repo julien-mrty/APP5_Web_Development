@@ -59,8 +59,13 @@ func ConnectDB() error {
 	if err != nil {
 		return fmt.Errorf("error migrating tables: %w", err)
 	}
-
+	// Ensure the `CreatedAt` column in the `scores` table is configured properly
+	err = ensureCreatedAtColumn()
+	if err != nil {
+		return fmt.Errorf("error ensuring CreatedAt column: %w", err)
+	}
 	return nil
+
 }
 
 func migrateTables() error {
@@ -70,5 +75,25 @@ func migrateTables() error {
 		return err
 	}
 	fmt.Println("Table migration successful")
+	return nil
+}
+
+// Function to ensure the `CreatedAt` column in the `scores` table is configured properly
+func ensureCreatedAtColumn() error {
+	sqlStatement := `
+        ALTER TABLE scores 
+        MODIFY created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL;
+    `
+	rawDB, err := DB.DB()
+	if err != nil {
+		return fmt.Errorf("error getting raw DB connection: %w", err)
+	}
+
+	_, err = rawDB.Exec(sqlStatement)
+	if err != nil {
+		return fmt.Errorf("error modifying CreatedAt column: %w", err)
+	}
+
+	fmt.Println("CreatedAt column ensured successfully")
 	return nil
 }

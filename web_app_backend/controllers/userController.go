@@ -18,7 +18,7 @@ import (
 // @Success 201 {object} models.User
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /users [post]
+// @Router /api/users [post]
 func CreateUser(c *gin.Context) {
 	var user models.User
 	var err error
@@ -67,7 +67,7 @@ func CreateUser(c *gin.Context) {
 // @Produce json
 // @Success 200 {array} models.User
 // @Failure 500 {object} map[string]string
-// @Router /users [get]
+// @Router /api/users [get]
 func GetAllUsers(c *gin.Context) {
 	users, err := services.GetAllUsers()
 	if err != nil {
@@ -86,7 +86,7 @@ func GetAllUsers(c *gin.Context) {
 // @Success 200 {object} models.User
 // @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /users/{id} [get]
+// @Router /api/users/{id} [get]
 func GetUserByID(c *gin.Context) {
 	id := c.Param("id")
 	user, err := services.GetUserByID(id)
@@ -105,7 +105,7 @@ func GetUserByID(c *gin.Context) {
 // @Success 204 {string} string "No Content"
 // @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /users/{id} [delete]
+// @Router /api/users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	err := services.DeleteUserByID(id)
@@ -128,7 +128,7 @@ func DeleteUser(c *gin.Context) {
 // @Failure 400 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /users/{id} [patch]
+// @Router /api/users/{id} [patch]
 func UpdateUser(c *gin.Context) {
 	id := c.Param("id")
 	var user models.User
@@ -201,8 +201,18 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	// Respond with success
-	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
+	// Generate a JWT token for the newly created user
+	token, err := services.GenerateJWT(user.ID)
+	if err != nil {
+		services.HandleError(c, http.StatusInternalServerError, "Failed to generate token")
+		return
+	}
+
+	// Respond with success and include the token
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "User created successfully",
+		"token":   token,
+	})
 }
 
 // Login godoc
@@ -216,7 +226,7 @@ func Signup(c *gin.Context) {
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /api/login [post]
+// @Router /api/auth/login [post]
 func Login(c *gin.Context) {
 	var request models.User
 
