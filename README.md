@@ -1,14 +1,18 @@
 # Web Application Setup
 ## This repository contains a three-tier web application composed of:
 
-Frontend: Vue.js application served by Nginx.
+Frontend: Vue.js application served by Nginx.<br />
 Backend: A Go-based REST API using GORM and MySQL.
-MySQL Database: Stores user accounts, scores, and game data.
-All components are orchestrated via Docker Compose, making it easy to get up and running quickly.
+MySQL Database: Stores user accounts, scores, and game data.<br />
+All components are orchestrated via Docker Compose, making it easy to get up and running quickly.<br />
 
-Prerequisites
+### Prerequisites<br />
 Git installed on your machine.
-Docker and Docker Compose installed.
+Git : `https://git-scm.com/downloads`
+Docker and Docker Compose installed. <br />
+You can follow these links to install <br />
+Docker : `https://docs.docker.com/engine/install/`<br />
+Docker Compose : `https://docs.docker.com/compose/install/`<br />
 
 ### Getting Started
 
