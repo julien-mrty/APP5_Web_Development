@@ -18,7 +18,7 @@ Docker and Docker Compose installed.
 
 2) **Build and Start the Containers:**<br />
 From the project root directory (where docker-compose.yml is located), run:<br />
-`docker-compose build`<br />
+`docker-compose build --no-cache`<br />
 `docker-compose up`<br />
 This will:<br />
 Build the frontend, backend, and database images.<br />
@@ -29,7 +29,13 @@ Once the containers are up, the application will be available at:<br />
 Frontend: `http://localhost:8080` <br />
 The frontend will communicate with the backend through the configured proxy. The backend runs internally on port 8081, and MySQL on 3306, but you only need to interact with the frontend URL above.
 
-4) **Stopping the Application:**<br />
+4) **Accessing Swagger Documentation:**<br />
+The backend provides Swagger documentation for the API. You can access it at:<br />
+
+Swagger Documentation: `http://localhost:8081/swagger/index.html`<br />
+This documentation provides an interactive interface to test API endpoints.<br />
+
+5) **Stopping the Application:**<br />
 To stop the containers, press Ctrl+C in the terminal where docker-compose up is running. To remove containers and associated networks, run:<br />
 `docker-compose down`<br />
 
