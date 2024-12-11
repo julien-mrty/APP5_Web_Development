@@ -1,9 +1,9 @@
 # Web Application Setup
 ## This repository contains a three-tier web application composed of:
 
-Frontend: Vue.js application served by Nginx.<br />
-Backend: A Go-based REST API using GORM and MySQL. <br />
-MySQL Database: Stores user accounts, scores, and game data.<br />
+**Frontend**: Vue.js application served by Nginx.<br />
+**Backend**: A Go-based REST API using GORM and MySQL. <br />
+**MySQL Database**: Stores user accounts, scores, and game data.<br />
 All components are orchestrated via Docker Compose, making it easy to get up and running quickly.<br />
 
 ### Prerequisites<br />
@@ -31,7 +31,7 @@ Start the services and link them together using Docker’s internal network.<br 
 3) **Accessing the Application:**<br />
 Once the containers are up, the application will be available at:<br />
 Frontend: `http://localhost:8080` <br />
-The frontend will communicate with the backend through the configured proxy. The backend runs internally on port 8081, and MySQL on 3306, but you only need to interact with the frontend URL above.
+The frontend will communicate with the backend through the configured proxy. The backend runs internally on port 8081, and MySQL on 3306, but you only need to interact with the frontend URL above.<br />
 
 4) **Accessing Swagger Documentation:**<br />
 The backend provides Swagger documentation for the API. You can access it at:<br />
