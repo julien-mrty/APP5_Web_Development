@@ -1,10 +1,10 @@
 # Web Application Setup
 ## This repository contains a three-tier web application composed of:
 
-Frontend: Vue.js application served by Nginx.
-Backend: A Go-based REST API using GORM and MySQL.
-MySQL Database: Stores user accounts, scores, and game data.
-All components are orchestrated via Docker Compose, making it easy to get up and running quickly.
+Frontend: Vue.js application served by Nginx.<br />
+Backend: A Go-based REST API using GORM and MySQL.<br />
+MySQL Database: Stores user accounts, scores, and game data.<br />
+All components are orchestrated via Docker Compose, making it easy to get up and running quickly.<br />
 
 ### About the Application
 Our web application is an endless game where players aim to achieve the highest possible score. To play, users must:<br />
