@@ -5,9 +5,6 @@ WORKDIR /app
 # Copy the go.mod and go.sum first to take advantage of Docker cache
 COPY go.mod go.sum ./
 
-# Copy the environment file
-COPY .env.production ./
-
 # Fetch dependencies and tidy up the go.mod file
 RUN go mod tidy
 
@@ -21,7 +18,6 @@ RUN CGO_ENABLED=0 GOOS=linux GO_ENV=production go build -a -installsuffix cgo -o
 FROM alpine:latest
 WORKDIR /root/
 COPY --from=builder /app/main .
-COPY --from=builder /app/.env.production . 
 RUN chmod +x ./main  # Ensure the binary is executable
 EXPOSE 8081
 CMD ["./main"]
