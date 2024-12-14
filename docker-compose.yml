@@ -26,11 +26,12 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-        
+
   frontend:
     build:
       context: ./web_app_frontend
       dockerfile: ./Dockerfile
+
     ports:
       - "8080:80"  # Mapping container port 80 (Nginx) to host port 8080
     depends_on:
