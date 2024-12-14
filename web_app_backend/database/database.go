@@ -26,14 +26,6 @@ func ConnectDB() error {
 		if err != nil {
 			log.Fatalf("Error loading .env.development file")
 		}
-	} else if env == "production" {
-		// Load environment variables from .env.production
-		err := godotenv.Load(".env.production")
-		if err != nil {
-			log.Fatalf("Error loading .env.production file")
-		}
-	} else {
-		log.Fatalf("Error loading .env unknown env variable")
 	}
 
 	dbHost := os.Getenv("DB_HOST")
