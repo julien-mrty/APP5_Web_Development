@@ -20,17 +20,13 @@ services:
       context: ./web_app_backend
       dockerfile: ./Dockerfile
     environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=my-secret-pw
-      - DB_NAME=bdd_jump_higher
+      - GO_ENV=production
     ports:
       - "8081:8081"
     depends_on:
       mysql:
         condition: service_healthy
-
+        
   frontend:
     build:
       context: ./web_app_frontend

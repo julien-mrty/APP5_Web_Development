@@ -9,6 +9,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
+	"github.com/joho/godotenv"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/models"
 )
 
@@ -16,6 +17,25 @@ var DB *gorm.DB
 
 // ConnectDB connects to the database and creates a new one if it doesn't exist
 func ConnectDB() error {
+	env := os.Getenv("GO_ENV")
+	fmt.Println("Environment:", env)
+
+	if env == "development" {
+		// Load environment variables from .env.development
+		err := godotenv.Load(".env.development")
+		if err != nil {
+			log.Fatalf("Error loading .env.development file")
+		}
+	} else if env == "production" {
+		// Load environment variables from .env.production
+		err := godotenv.Load(".env.production")
+		if err != nil {
+			log.Fatalf("Error loading .env.production file")
+		}
+	} else {
+		log.Fatalf("Error loading .env unknown env variable")
+	}
+
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")

@@ -38,7 +38,9 @@ export default {
       }
 
       try {
-        const response = await fetch("/api/auth/signup", {
+        const apiUrl = import.meta.env.VITE_APP_API_URL;
+
+        const response = await fetch(`${apiUrl}/api/auth/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

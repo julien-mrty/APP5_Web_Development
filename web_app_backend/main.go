@@ -44,7 +44,7 @@ func main() {
 		if err == nil {
 			break
 		}
-		log.Printf("Database not ready. Retrying in 5 seconds... (%d/10)", i+1)
+		log.Printf("Can not reach database. Retrying in 5 seconds... (%d/10)", i+1)
 		time.Sleep(5 * time.Second)
 	}
 

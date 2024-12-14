@@ -29,9 +29,12 @@ export default {
     const password = ref("");
     const errorMessage = ref("");
 
+    const apiUrl = import.meta.env.VITE_APP_API_URL;
+
     const handleSubmit = async () => {
       try {
-        const response = await fetch("/api/auth/login", {
+        const response = await fetch(`${apiUrl}/api/auth/login`, {
+
           method: "POST",
           headers: {
             "Content-Type": "application/json",
