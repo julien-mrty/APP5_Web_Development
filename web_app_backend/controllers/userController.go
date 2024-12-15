@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,9 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	user.Password = hashedPassword
+
+	// Generate RoboHash Avatar URL
+	user.AvatarURL = fmt.Sprintf("https://robohash.org/%s", user.Username)
 
 	// Attempt to create the user
 	err = services.CreateUser(&user)

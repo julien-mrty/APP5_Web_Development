@@ -247,14 +247,14 @@ const docTemplate = `{
         },
         "/api/scores": {
             "get": {
-                "description": "Retrieve the list of all scores",
+                "description": "Retrieve the list of scores for the authenticated user",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Scores"
                 ],
-                "summary": "Get all scores",
+                "summary": "Get user scores",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -614,6 +614,10 @@ const docTemplate = `{
         "models.User": {
             "type": "object",
             "properties": {
+                "avatar_url": {
+                    "description": "Field for RoboHash avatar URL",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },

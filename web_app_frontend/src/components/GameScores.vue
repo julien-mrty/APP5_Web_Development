@@ -1,6 +1,10 @@
 <template>
   <div class="scores-page">
     <h1>See your scores here</h1>
+    <div class="user-info">
+      <img :src="user.avatar_url" alt="User Avatar" class="user-avatar" />
+      <h3>{{ user.username }}</h3>
+    </div>
     <div v-if="scores.length > 0">
       <ul>
         <li v-for="(scores, index) in scores" :key="index">
@@ -78,6 +82,7 @@ export default {
     });
 
     return {
+      user,
       goToHome,
       logout,
       scores, 

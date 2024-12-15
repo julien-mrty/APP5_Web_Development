@@ -1,6 +1,10 @@
 <template>
   <div class="home-page">
     <h1>Game Home Page</h1>
+    <div class="user-info">
+      <img :src="user.avatar_url" alt="User Avatar" class="user-avatar" />
+      <h3>{{ user.username }}</h3>
+    </div>
     <div class="buttons">
       <button @click="goToPlay">Play</button>
       <button @click="goToViewScores">View Scores</button>
@@ -44,6 +48,7 @@ export default {
       goToPlay,
       goToViewScores,
       logout,
+      user,
     };
   },
 };
