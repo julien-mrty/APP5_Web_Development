@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 export default {
@@ -103,11 +103,9 @@ export default {
       "frankenstein"
     ]; // 11 images
 
-    // Options possibles pour le nombre de cartes (paires * 2)
-    // Max 22 car 11 images disponibles = 11 paires
+    // Options possibles pour le nombre de cartes (maximum 22)
     const cardCountOptions = [4, 8, 12, 16, 20, 22];
-
-    const selectedCardCount = ref(4); // Valeur par défaut, 4 cartes = 2 paires
+    const selectedCardCount = ref(4); // Valeur par défaut, 4 cartes
 
     const newPlayer = ref(true);
     const cards = ref([]);
@@ -117,6 +115,9 @@ export default {
     const moves = ref(0);
 
     const gameEnded = ref(false);
+
+    // Ajout d'un GameID par défaut, adapté à votre logique de jeu (ex: 1)
+    const gameId = 1;
 
     const startNewGame = () => {
       newPlayer.value = false;
@@ -128,8 +129,6 @@ export default {
     };
 
     const initializeGame = (count) => {
-      // count = nombre de cartes total
-      // On prend count/2 images dans allImages
       const pairsNeeded = count / 2;
       const chosenImages = allImages.slice(0, pairsNeeded);
       let tempCards = chosenImages.concat(chosenImages);
@@ -147,7 +146,7 @@ export default {
     };
 
     const flipCard = (index) => {
-      if (gameEnded.value) return; // Si déjà fini, on ignore
+      if (gameEnded.value) return;
       const card = cards.value[index];
       if (card.matched || card.visible) return;
       if (flippedCards.value.length === 2) return;
@@ -167,7 +166,6 @@ export default {
       const secondCard = cards.value[secondIndex];
 
       if (firstCard.value === secondCard.value) {
-        // Match
         firstCard.matched = true;
         secondCard.matched = true;
         flippedCards.value = [];
@@ -177,15 +175,46 @@ export default {
           // Toutes les cartes trouvées
           statusMessage.value = "";
           gameEnded.value = true;
+          saveFinalScore(); // Appeler la fonction pour enregistrer le score en BDD
         }
       } else {
-        // Pas un match, pénalité
         score.value -= 5;
         setTimeout(() => {
           firstCard.visible = false;
           secondCard.visible = false;
           flippedCards.value = [];
         }, 1000);
+      }
+    };
+
+    const saveFinalScore = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
+
+      const apiUrl = import.meta.env.VITE_APP_API_URL;
+      const scoreData = {
+        GameID: gameId,
+        Points: score.value
+      };
+
+      try {
+        const response = await fetch(`${apiUrl}/api/scores`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(scoreData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Failed to save final score:", errorData);
+        } else {
+          console.log("Final score saved successfully");
+        }
+      } catch (error) {
+        console.error("Error saving final score:", error);
       }
     };
 
