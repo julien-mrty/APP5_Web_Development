@@ -27,6 +27,7 @@ services:
       - DB_PASSWORD=my-secret-pw
       - API_PORT=8081
       - DB_NAME=bdd_jump_higher
+      - CORS_ALLOWED_ORIGIN=http://localhost:8080
     ports:
       - "8081:8081"
     depends_on:
