@@ -8,7 +8,8 @@ import (
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/services"
 )
 
-// Get all scores for the logged-in user
+// GetAllScores fetches all scores for the authenticated user.
+// It expects "id" in the context (set by AuthMiddleware).
 // @Summary Get user scores
 // @Description Retrieve the list of scores for the authenticated user
 // @Tags Scores
@@ -16,20 +17,20 @@ import (
 // @Success 200 {array} models.Score
 // @Router /api/scores [get]
 func GetAllScores(c *gin.Context) {
-	userIDValue, exists := c.Get("userID")
+	idValue, exists := c.Get("id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
 	// Explicit type assertion with error handling
-	userID, ok := userIDValue.(uint)
+	id, ok := idValue.(uint)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse userID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse id"})
 		return
 	}
 
-	scores, err := services.GetScoresByUserID(userID)
+	scores, err := services.GetScoresByUserID(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
