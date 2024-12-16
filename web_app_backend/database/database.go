@@ -17,24 +17,33 @@ var DB *gorm.DB
 
 // ConnectDB connects to the database and creates a new one if it doesn't exist
 func ConnectDB() error {
-	env := os.Getenv("GO_ENV")
+	env := os.Getenv("APP_ENV")
 	fmt.Println("Environment:", env)
 
 	if env == "development" {
 		// Load environment variables from .env.development
-		err := godotenv.Load(".env.development")
+		err := godotenv.Overload(".env.development")
 		if err != nil {
 			log.Fatalf("Error loading .env.development file")
 		}
+		fmt.Println("Loaded DB Configuration:")
+		fmt.Println("DB_HOST:", os.Getenv("DB_HOST"))
+		fmt.Println("DB_PORT:", os.Getenv("DB_PORT"))
+		fmt.Println("DB_USER:", os.Getenv("DB_USER"))
+		fmt.Println("DB_PASSWORD:", os.Getenv("DB_PASSWORD"))
+		fmt.Println("DB_NAME:", os.Getenv("DB_NAME"))
 	}
 
 	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "localhost" // default value
+	}
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 
-	// Configuration for connecting to MySQL without specifying a database
+	// Configuration for connecting to MySQL with specifying a database
 	dsnWithoutDB := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPass, dbHost, dbPort)
 
 	// Open a basic SQL connection to create the database

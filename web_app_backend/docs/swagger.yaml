@@ -24,6 +24,9 @@ definitions:
     type: object
   models.User:
     properties:
+      avatar_url:
+        description: Field for RoboHash avatar URL
+        type: string
       id:
         type: integer
       password:
@@ -192,7 +195,7 @@ paths:
       - Games
   /api/scores:
     get:
-      description: Retrieve the list of all scores
+      description: Retrieve the list of scores for the authenticated user
       produces:
       - application/json
       responses:
@@ -202,7 +205,7 @@ paths:
             items:
               $ref: '#/definitions/models.Score'
             type: array
-      summary: Get all scores
+      summary: Get user scores
       tags:
       - Scores
     post:

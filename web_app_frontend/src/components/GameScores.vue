@@ -1,6 +1,9 @@
 <template>
   <div class="scores-page">
-    <h1>See your scores here</h1>
+    <h1>See your scores here {{ user.username }}</h1>
+    <div class="user-info">
+      <img :src="user.avatar_url" alt="User Avatar" class="user-avatar" />
+    </div>
     <div v-if="scores.length > 0">
       <ul>
         <li v-for="(scores, index) in scores" :key="index">
@@ -27,6 +30,7 @@ export default {
   setup() {
     const router = useRouter(); // Get the router instance
     const scores = ref([]); // Reactive variable to store scores
+    const user = ref({ avatar_url: "", username: "" });
 
     const goToHome = () => {
       router.push("/home"); // Navigate to home page
@@ -45,9 +49,10 @@ export default {
         router.push("/");
         return;
       }
-
+      
       try {
-        const response = await fetch("http://localhost:8080/api/scores", {
+        const apiUrl = import.meta.env.VITE_APP_API_URL;
+        const response = await fetch(`${apiUrl}/api/scores`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -67,17 +72,45 @@ export default {
 
     };
 
+    function base64UrlToBase64(base64Url) {
+      return base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    }
+
+    // Fetch user info from token
+    const fetchUserInfo = () => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          // Extraire la partie payload du token
+          const payloadBase64Url = token.split(".")[1];
+          const payloadBase64 = base64UrlToBase64(payloadBase64Url);
+          const decodedPayload = JSON.parse(atob(payloadBase64));
+
+          user.value.username = decodedPayload.username || "Unknown";
+          user.value.avatar_url = `https://robohash.org/${decodedPayload.username}?set=set1&size=150x150`;
+        } catch (error) {
+          console.error("Failed to parse token:", error);
+          router.push("/"); 
+        }
+      } else {
+        router.push("/");
+      }
+};
+
+
     // Protect the route and fetch scores on mount
     onMounted(() => {
       const token = localStorage.getItem("authToken");
       if (!token) {
         router.push("/"); // Redirect to login if no token is found
       } else {
+        fetchUserInfo();
         fetchScores(); // Fetch scores if the token is valid
       }
     });
 
     return {
+      user,
       goToHome,
       logout,
       scores, 

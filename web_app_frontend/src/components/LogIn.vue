@@ -48,10 +48,14 @@ export default {
         if (response.ok) {
           const data = await response.json();
 
-          // Save the token to localStorage
+          // Save the token, username and avatar_url to localStorage
           localStorage.setItem("authToken", data.token);
+          localStorage.setItem("username", data.username);
+          localStorage.setItem("avatar_url", data.avatar_url);
 
           console.log("Login successful:", data);
+          console.log("Received Token:", data.token);
+
 
           // Redirect to the home page
           router.push("/home");

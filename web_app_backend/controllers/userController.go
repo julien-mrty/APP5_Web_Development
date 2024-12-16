@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,9 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	user.Password = hashedPassword
+
+	// Generate RoboHash Avatar URL
+	user.AvatarURL = fmt.Sprintf("https://robohash.org/%s?set=set1&size=150x150", user.Username)
 
 	// Attempt to create the user
 	err = services.CreateUser(&user)
@@ -194,6 +198,9 @@ func Signup(c *gin.Context) {
 	}
 	user.Password = hashedPassword
 
+	// Generate RoboHash Avatar URL
+	user.AvatarURL = fmt.Sprintf("https://robohash.org/%s?set=set1&size=150x150", user.Username)
+
 	// Attempt to create the user in the database
 	err = services.CreateUser(&user)
 	if err != nil {
@@ -202,7 +209,11 @@ func Signup(c *gin.Context) {
 	}
 
 	// Generate a JWT token for the newly created user
-	token, err := services.GenerateJWT(user.ID)
+	token, err := services.GenerateJWT(map[string]interface{}{
+		"id":       user.ID,
+		"username": user.Username, // Inclure le username dans le payload
+		"avatar":   fmt.Sprintf("https://robohash.org/%s?set=set1&size=150x150", user.Username),
+	})
 	if err != nil {
 		services.HandleError(c, http.StatusInternalServerError, "Failed to generate token")
 		return
@@ -247,11 +258,16 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token, err := services.GenerateJWT(user.ID)
+	token, err := services.GenerateJWT(map[string]interface{}{
+		"id":       user.ID,
+		"username": user.Username, // Inclure le username dans le payload
+		"avatar":   fmt.Sprintf("https://robohash.org/%s?set=set1&size=150x150", user.Username),
+	})
 	if err != nil {
 		services.HandleError(c, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	// Include token in the response
+	c.JSON(http.StatusOK, gin.H{"token": token, "message": "User logged successfully"})
 }

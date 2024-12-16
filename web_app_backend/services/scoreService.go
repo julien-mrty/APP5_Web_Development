@@ -36,6 +36,7 @@ func GetScoreByID(id string) (*models.Score, error) {
 	return &score, nil
 }
 
+// GetScoresByUserID retrieves all scores associated with a specific user.
 func GetScoresByUserID(userID uint) ([]models.Score, error) {
 	var scores []models.Score
 	result := database.DB.Where("user_id = ?", userID).Find(&scores)
