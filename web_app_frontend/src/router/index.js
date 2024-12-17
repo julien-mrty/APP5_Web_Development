@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 import LogIn from '../components/LogIn.vue';
 import Home from '../components/Home.vue';
 import Play from '../components/PlayGame.vue';
 import Scores from '../components/GameScores.vue';
 import SignUp from "../components/SignUp.vue";
+
 
 
 const routes = [
