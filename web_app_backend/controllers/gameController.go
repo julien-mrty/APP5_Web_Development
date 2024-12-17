@@ -1,45 +1,52 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/models"
+	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/helpers"
 	"github.com/julien-mrty/Web_app_jump_higher/web_app_backend/services"
 )
 
+// Wrapper for services.GetAllGames to match the expected function signature for HandleGetAll
+func getAllGamesWrapper() (interface{}, error) {
+	return services.GetAllGames()
+}
+
 // Get all games
+// @Summary Get all games
+// @Description Retrieve the list of all games
+// @Tags Games
+// @Produce json
+// @Success 200 {array} models.Game
+// @Router /api/games [get]
 func GetAllGames(c *gin.Context) {
-	games, err := services.GetAllGames()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, games)
+	helpers.HandleGetAll(c, getAllGamesWrapper)
 }
 
-// Create a new game
+// Wrapper for services.GetGameByID to match the expected function signature for HandleGetByID
+func getGameByIDWrapper(id string) (interface{}, error) {
+	return services.GetGameByID(id)
+}
+
+// @Summary Create a new game
+// @Description Add a new game to the database
+// @Tags Games
+// @Accept json
+// @Produce json
+// @Param game body models.Game true "Game data"
+// @Success 201 {object} models.Game
+// @Router /api/games [post]
 func CreateGame(c *gin.Context) {
-	var game models.Game
-	if err := c.ShouldBindJSON(&game); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := services.CreateGame(&game); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusCreated, game)
+	helpers.HandleCreate(c, services.CreateGame)
 }
 
-// Get a game by ID
+// @Summary Get a game by ID
+// @Description Retrieve a specific game by its ID
+// @Tags Games
+// @Produce json
+// @Param id path int true "Game ID"
+// @Success 200 {object} models.Game
+// @Failure 404 {object} map[string]string
+// @Router /api/games/{id} [get]
 func GetGameByID(c *gin.Context) {
-	id := c.Param("id")
-	game, err := services.GetGameByID(id)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Game not found"})
-		return
-	}
-	c.JSON(http.StatusOK, game)
+	helpers.HandleGetByID(c, "id", getGameByIDWrapper)
 }

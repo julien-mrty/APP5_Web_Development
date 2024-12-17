@@ -1,17 +1,44 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 import ConnectionPage from '../View/ConnectionPage.vue';
 import TheWelcome from '../components/TheWelcome.vue';
 
+import LogIn from '../components/LogIn.vue';
+import Home from '../components/Home.vue';
+import Play from '../components/PlayGame.vue';
+import Scores from '../components/GameScores.vue';
+import SignUp from "../components/SignUp.vue";
+
+
+
 const routes = [
   {
-    path: '/',
-    name: 'ConnectionPage',
-    component: ConnectionPage,  // The connection page will be shown first
+    path: '/', // Default route
+    name: 'LogIn',
+    component: LogIn, // This should render your Connection
   },
   {
-    path: '/welcome',
-    name: 'WelcomePage',
-    component: TheWelcome,
+    path: '/home',
+    name: 'Home',
+    component: Home,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/signup",
+    name: 'SignUp',
+    component: SignUp
+  },
+  {
+    path: '/playgame',
+    name: 'PlayGame',
+    component: Play,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/gamescores',
+    name: 'GameScores',
+    component: Scores,
+    meta: { requiresAuth: true }
   },
 ];
 
