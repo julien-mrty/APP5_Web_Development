@@ -104,7 +104,7 @@ class MainScene extends Phaser.Scene {
         moveEnvironment() {
             const decorationSpeed = -40; // Vitesse de déplacement des décorations
         
-            this.decorations.forEach((decoration, index) => {
+            this.decorations.forEach((decoration) => {
                 // Déplacer chaque décoration vers la gauche
                 decoration.x += decorationSpeed * (1 / 60); // Déplacement basé sur 60 FPS
         

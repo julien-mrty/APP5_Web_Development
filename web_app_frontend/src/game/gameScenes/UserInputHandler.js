@@ -1,4 +1,3 @@
-import Phaser from "phaser";
 import gameConfig from './../gameConfig/gameConfig.js';
 
 export default class UserInputHandler {

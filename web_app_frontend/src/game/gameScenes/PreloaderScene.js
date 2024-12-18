@@ -1,7 +1,6 @@
 import Phaser from "phaser";
 
 //Character
-import base from "/src/gameAssets/gameSprites/base.png"
 import HeroRunAnimation from "/src/gameAssets/gameSprites/HeroRun.png"
 import EnemyRunAttackAnimation from "/src/gameAssets/gameSprites/EnemyRunAttack2.png"
 
