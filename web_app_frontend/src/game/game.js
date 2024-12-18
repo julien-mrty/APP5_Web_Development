@@ -5,7 +5,7 @@ import PreloaderScene from "./gameScenes/PreloaderScene";
 
 const config = {
     ...gameConfig,
-    scene: [PreloaderScene, MainScene], // Ajouter des scènes
+    scene: [PreloaderScene, MainScene], // Add scenes
 };
 
 let game;
