@@ -6,7 +6,7 @@
       <button @click="logout" class="logout-button">Logout</button>
     </div>
 
-    <hr/>
+    <hr />
     <h2>Play the Card Matching Game</h2>
 
     <div class="game-settings">
@@ -21,27 +21,18 @@
       <template v-else>Restart Game</template>
     </button>
 
-    <!-- Affichage du score et des coups (caché si pas de partie en cours) -->
+    <!-- Display score and moves only if the game is running -->
     <div class="game-info" v-if="!newPlayer && !gameEnded">
       <p>Score: {{ score }}</p>
       <p>Moves: {{ moves }}</p>
     </div>
 
-    <!-- Plateau de jeu -->
+    <!-- Game board -->
     <section class="game-board" v-if="!gameEnded && !newPlayer">
-      <div 
-        v-for="(card, index) in cards" 
-        :key="index"
-        class="card"
-        :class="{ 'is-flipped': card.visible }"
-        @click="flipCard(index)"
-      >
+      <div v-for="(card, index) in cards" :key="index" class="card" :class="{ 'is-flipped': card.visible }"
+        @click="flipCard(index)">
         <div class="card-face is-front">
-          <img 
-            class="card-image" 
-            :src="`/images/${card.value}.png`" 
-            :alt="card.value"
-          />
+          <img class="card-image" :src="`/images/${card.value}.png`" :alt="card.value" />
           <img v-if="card.matched" src="/images/checkmark.svg" class="icon-checkmark" />
         </div>
         <div class="card-face is-back"></div>
@@ -50,7 +41,7 @@
 
     <h2 class="status">{{ statusMessage }}</h2>
 
-    <!-- Récapitulatif fin de partie -->
+    <!-- End of game summary -->
     <div class="game-summary" v-if="gameEnded">
       <h3>Congratulations!</h3>
       <p>You found all matches.</p>
@@ -71,10 +62,12 @@ export default {
   setup() {
     const router = useRouter();
 
+    // Navigate back to home
     const goToHome = () => {
       router.push("/home");
     };
 
+    // Logout by removing the token
     const logout = () => {
       localStorage.removeItem("authToken");
       router.push("/");
@@ -85,27 +78,47 @@ export default {
       const token = localStorage.getItem("authToken");
       if (!token) {
         router.push("/");
+      } else {
+        decodeTokenForUserID(token);
       }
     });
 
-    // ----- Images disponibles -----
+    // Decode the token to extract user_id
+    const userId = ref(null);
+    const decodeTokenForUserID = (token) => {
+      try {
+        const payloadBase64Url = token.split(".")[1];
+        const payloadBase64 = payloadBase64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const decodedPayload = JSON.parse(atob(payloadBase64));
+        if (decodedPayload && decodedPayload.userID) {
+          userId.value = decodedPayload.userID; // userID should be set in the token
+        } else if (decodedPayload && decodedPayload.id) {
+          // If the token uses 'id' instead of 'userID'
+          userId.value = decodedPayload.id;
+        }
+      } catch (error) {
+        console.error("Failed to decode token:", error);
+        router.push("/");
+      }
+    };
+
+    // All available images
     const allImages = [
       "ghost",
       "pumpkin",
       "bat",
       "candy",
-      "spider",
-      "skull",
-      "cat",
-      "witch",
-      "moon",
-      "broom",
-      "frankenstein"
-    ]; // 11 images
+      "cauldron",
+      "cupcake",
+      "witch-hat",
+      "moon"
+    ]; // 8 images
 
-    // Options possibles pour le nombre de cartes (maximum 22)
-    const cardCountOptions = [4, 8, 12, 16, 20, 22];
-    const selectedCardCount = ref(4); // Valeur par défaut, 4 cartes
+
+    // Possible card counts
+    const cardCountOptions = [4, 8, 12, 16, 20, 24];
+    const selectedCardCount = ref(4); // Default: 4 cards
+
 
     const newPlayer = ref(true);
     const cards = ref([]);
@@ -113,13 +126,15 @@ export default {
     const statusMessage = ref("");
     const score = ref(0);
     const moves = ref(0);
-
     const gameEnded = ref(false);
 
-    // Ajout d'un GameID par défaut, adapté à votre logique de jeu (ex: 1)
-    const gameId = 1;
+    // We want the gameId to change each new game. Let's increment it each time.
+    // Start from 0 and increment each time startNewGame() is called.
+    const gameId = ref(0);
 
+    // Start a new game, increment the gameId, reset status
     const startNewGame = () => {
+      gameId.value += 1; // Increment game ID each time we start a new game
       newPlayer.value = false;
       gameEnded.value = false;
       statusMessage.value = "Find all matches!";
@@ -128,6 +143,7 @@ export default {
       initializeGame(selectedCardCount.value);
     };
 
+    // Initialize the game with the chosen number of cards
     const initializeGame = (count) => {
       const pairsNeeded = count / 2;
       const chosenImages = allImages.slice(0, pairsNeeded);
@@ -145,6 +161,7 @@ export default {
       flippedCards.value = [];
     };
 
+    // Handle flipping a card
     const flipCard = (index) => {
       if (gameEnded.value) return;
       const card = cards.value[index];
@@ -160,6 +177,7 @@ export default {
       }
     };
 
+    // Check if the two flipped cards match
     const checkForMatch = () => {
       const [firstIndex, secondIndex] = flippedCards.value;
       const firstCard = cards.value[firstIndex];
@@ -171,11 +189,11 @@ export default {
         flippedCards.value = [];
         score.value += 20;
 
+        // If all cards matched, end the game
         if (cards.value.every(c => c.matched)) {
-          // Toutes les cartes trouvées
           statusMessage.value = "";
           gameEnded.value = true;
-          saveFinalScore(); // Appeler la fonction pour enregistrer le score en BDD
+          saveFinalScore();
         }
       } else {
         score.value -= 5;
@@ -187,13 +205,15 @@ export default {
       }
     };
 
+    // Save the final score to the database
     const saveFinalScore = async () => {
       const token = localStorage.getItem("authToken");
-      if (!token) return;
+      if (!token || !userId.value) return; // Ensure we have user_id from token
 
       const apiUrl = import.meta.env.VITE_APP_API_URL;
       const scoreData = {
-        GameID: gameId,
+        UserID: userId.value,  // Now we include the user ID
+        GameID: gameId.value,  // Use the incremented gameId
         Points: score.value
       };
 
