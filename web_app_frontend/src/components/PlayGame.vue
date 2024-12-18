@@ -6,7 +6,7 @@
       <button @click="logout" class="logout-button">Logout</button>
     </div>
 
-    <hr/>
+    <hr />
     <h2>Play the Card Matching Game</h2>
 
     <div class="game-settings">
@@ -29,19 +29,10 @@
 
     <!-- Game board -->
     <section class="game-board" v-if="!gameEnded && !newPlayer">
-      <div 
-        v-for="(card, index) in cards" 
-        :key="index"
-        class="card"
-        :class="{ 'is-flipped': card.visible }"
-        @click="flipCard(index)"
-      >
+      <div v-for="(card, index) in cards" :key="index" class="card" :class="{ 'is-flipped': card.visible }"
+        @click="flipCard(index)">
         <div class="card-face is-front">
-          <img 
-            class="card-image" 
-            :src="`/images/${card.value}.png`" 
-            :alt="card.value"
-          />
+          <img class="card-image" :src="`/images/${card.value}.png`" :alt="card.value" />
           <img v-if="card.matched" src="/images/checkmark.svg" class="icon-checkmark" />
         </div>
         <div class="card-face is-back"></div>
@@ -126,9 +117,11 @@ export default {
       "frankenstein"
     ]; // 11 images
 
+
     // Possible card counts
-    const cardCountOptions = [4, 8, 12, 16, 20, 22];
+    const cardCountOptions = [4, 8, 12, 16, 20, 24];
     const selectedCardCount = ref(4); // Default: 4 cards
+
 
     const newPlayer = ref(true);
     const cards = ref([]);
