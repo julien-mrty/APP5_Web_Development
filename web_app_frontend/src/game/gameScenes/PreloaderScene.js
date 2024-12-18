@@ -35,20 +35,6 @@ class PreloaderScene extends Phaser.Scene {
             frameWidth: 42, //width of a single frame in the spridesheet 
             frameHeight: 42 //height of a single frame in the spridesheet
         });//Player sprite
-
-
-
-        // Charger les assets
-       /* this.load.spritesheet("IdleAnimation", IdleAnimation, {
-            frameWidth: 42,
-            frameHeight: 42,
-        });*/
-
-       /* // Load a spritesheet with multiple frames
-        this.load.spritesheet('RunAnimationLeft', RunAnimationLeft, {
-            frameWidth: 42, //width of a single frame in the spridesheet 
-            frameHeight: 42 //height of a single frame in the spridesheet
-        });//Player sprite*/
     }
 
     create() {

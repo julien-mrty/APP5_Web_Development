@@ -2,12 +2,12 @@ import gameConfig from './../gameConfig/gameConfig.js';
 
 export default class UserInputHandler {
     constructor(scene) {
-        this.scene = scene; // Référence à la scène parent
-        this.randomSequence = ""; // Séquence générée
+        this.scene = scene; // Reference to parent scene
+        this.randomSequence = ""; // Generated sequence
         this.playerInput = ""; // Saisie utilisateur
-        this.minSequence = 3; // Longueur minimale
-        this.maxSequence = 7; // Longueur maximale
-        // Ajout explicite des propriétés
+        this.minSequence = 3; // Minimum length
+        this.maxSequence = 7; // Maximum length
+        // Explicit addition of properties
         this.sequenceText = null;
         this.playerInputText = null;
         }
@@ -18,10 +18,9 @@ export default class UserInputHandler {
         this.scene.input.keyboard.on("keydown", this.handleSequenceInput, this);
     }
 
-    //Generate a random sequence of three letters.
+    //Generate a random sequence of letters.
     generateRandomSequence() {
         //Set of valid characters
-       // const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀ-ÖØ-Ýà-öø-ý0123456789&\"'()-_ç@)=/*?\\!§";
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzà-ö0123456789&\"'()-_ç@)=/*?\\!§";
 
         // Determine a random length between minSequence and maxSequence
@@ -34,6 +33,7 @@ export default class UserInputHandler {
         return sequence;
     }
   
+    //Receive the key entered by the player
     handleSequenceInput(event) {
         const key = event.key;
           
@@ -44,13 +44,13 @@ export default class UserInputHandler {
                 console.log("Entrée actuelle après suppression :", this.playerInput);
                 this.playerInputText.setText(this.playerInput); // Update display
             }
-            return; // Ne pas continuer avec le reste de la méthode
+            return; // Do not continue with the rest of the method
         }
 
-        // Si la touche est "Enter", valider la séquence
+        // If the key is “Enter”, validate the sequence
         if (key === "Enter") {
-            if (this.playerInput.length >= this.minSequence && this.playerInput.length <= this.maxSequence) { // Vérifier uniquement si l'utilisateur a bien 3 caractères
-                this.checkPlayerInput(); // Appel à la fonction pour vérifier la saisie
+            if (this.playerInput.length >= this.minSequence && this.playerInput.length <= this.maxSequence) { // Vérifier uniquement si l'utilisateur a bien une chaine dans l'intervalle de minSequence et maxSequence
+                this.checkPlayerInput(); // Call function to check input
             } 
             else {
                 console.log("Erreur : La saisie doit contenir entre " + this.minSequence + " et " + this.maxSequence + " caractères.");
@@ -60,7 +60,7 @@ export default class UserInputHandler {
         }
 
 
-        // Expression régulière pour autoriser :
+        //            
         // - Lettres majuscules et minuscules (A-Z, a-z)
         // - Lettres accentuées majuscules et minuscules (À-Ö, à-ö, Ø-Ý, ø-ý)
         // - Chiffres (0-9)
@@ -92,17 +92,18 @@ export default class UserInputHandler {
         }
     }
 
+    //Prpose
     passToNextSequence() {
-        this.playerInput = ""; // Réinitialise l'entrée du joueur
-        this.randomSequence = this.generateRandomSequence(); // Génère une nouvelle séquence
-        this.sequenceText.setText(this.randomSequence); // Met à jour le texte à l'écran
-        this.playerInputText.setText(this.playerInput); // Réinitialise l'affichage de l'entrée utilisateur
+        this.playerInput = ""; // Resets player input
+        this.randomSequence = this.generateRandomSequence(); // Generates a new sequence
+        this.sequenceText.setText(this.randomSequence); // Updates text on screen
+        this.playerInputText.setText(this.playerInput); // Resets user input display
     }
 
     
     //Display the sequence of letters created
     createSequenceDisplay() {
-        this.randomSequence = this.generateRandomSequence(); // Générer une séquence aléatoire
+        this.randomSequence = this.generateRandomSequence(); // Generate a random sequence
         this.sequenceText = this.scene.add.text(
             gameConfig.width / 2, 
             50, 
@@ -110,12 +111,12 @@ export default class UserInputHandler {
             { font: "32px Arial", fill: "#ffffff" }
         ).setOrigin(0.5, 0.5);
 
-        // Ajouter un texte pour l'entrée du joueur
+        // Add text for player entry
         this.playerInputText = this.scene.add.text(
             gameConfig.width / 2, 
             100, 
-            this.playerInput, // Initialement vide
-            { font: "32px Arial", fill: "#ff0000" } // Texte en rouge
+            this.playerInput, // Initially empty
+            { font: "32px Arial", fill: "#ff0000" } // Text in red
         ).setOrigin(0.5, 0.5);
     }
 
