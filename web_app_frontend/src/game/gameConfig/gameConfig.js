@@ -1,3 +1,5 @@
+/* global Phaser */
+
 const gameConfig = {
     width: 700,
     height: 500,
