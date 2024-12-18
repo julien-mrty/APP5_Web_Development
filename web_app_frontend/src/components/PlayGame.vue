@@ -108,14 +108,11 @@ export default {
       "pumpkin",
       "bat",
       "candy",
-      "spider",
-      "skull",
-      "cat",
-      "witch",
-      "moon",
-      "broom",
-      "frankenstein"
-    ]; // 11 images
+      "cauldron",
+      "cupcake",
+      "witch-hat",
+      "moon"
+    ]; // 8 images
 
 
     // Possible card counts
