@@ -65,7 +65,7 @@ export default class UserInputHandler {
         // - Lettres accentuées majuscules et minuscules (À-Ö, à-ö, Ø-Ý, ø-ý)
         // - Chiffres (0-9)
         // - Caractères spéciaux (&, ", ', (, -, _, ç, @, ), =, /, *, ?, \, !, §)
-        const validKeyPattern = /^[A-Za-zÀ-ÖØ-Ýà-öø-ý0-9&"'\(\)_ç@)=/\*?\\!§-]$/;
+        const validKeyPattern = /^[A-Za-zÀ-ÖØ-Ýà-öø-ý0-9&"'()_ç@)=/*?\\!§-]$/;
     
         if (validKeyPattern.test(key)) {
             if (this.playerInput.length < this.maxSequence) { // Limit entry to 7 characters
