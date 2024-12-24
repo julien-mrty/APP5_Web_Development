@@ -10,10 +10,6 @@ import Fog from "/src/gameAssets/gameBackgrounds/Fog.png"
 import Tree1 from "/src/gameAssets/gameBackgrounds/Tree1.png"
 
 
-//import IdleAnimation from "/src/gameAssets/gameSprites/Idle.png"
-//import RunAnimationLeft from "/src/gameAssets/gameSprites/RunReverse.png"
-
-
 class PreloaderScene extends Phaser.Scene {
     constructor() {
         super("PreloaderScene");

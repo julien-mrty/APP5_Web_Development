@@ -3,12 +3,9 @@ import gameConfig from './../gameConfig/gameConfig.js';
 export default class UserInputHandler {
     constructor(scene) {
         this.scene = scene; // Reference to parent scene
-        this.randomSequence = ""; // Generated sequence
         this.playerInput = ""; // Saisie utilisateur
-        this.minSequence = 3; // Minimum length
-        this.maxSequence = 7; // Maximum length
-        // Explicit addition of properties
-        this.sequenceText = null;
+        this.minSequence = 1; // Minimum sequence length
+        this.maxSequence = 2; // Maximum sequence length
         this.playerInputText = null;
         }
 
@@ -50,17 +47,18 @@ export default class UserInputHandler {
         // If the key is “Enter”, validate the sequence
         if (key === "Enter") {
             if (this.playerInput.length >= this.minSequence && this.playerInput.length <= this.maxSequence) { // Vérifier uniquement si l'utilisateur a bien une chaine dans l'intervalle de minSequence et maxSequence
-                this.checkPlayerInput(); // Call function to check input
+                //this.checkPlayerInput(); // Call function to check input
+                this.scene.checkPlayerInputForEnemies(this.playerInput); // Vérifie l'entrée pour tous les ennemis
+                this.playerInput = ""; // Reset après validation
+                this.playerInputText.setText(this.playerInput); // Réinitialiser l'affichage
             } 
             else {
                 console.log("Erreur : La saisie doit contenir entre " + this.minSequence + " et " + this.maxSequence + " caractères.");
-                this.passToNextSequence(); // Go directly to the next sequence
+                //this.passToNextSequence(); // Go directly to the next sequence
             }
             return;
         }
-
-
-        //            
+         
         // - Lettres majuscules et minuscules (A-Z, a-z)
         // - Lettres accentuées majuscules et minuscules (À-Ö, à-ö, Ø-Ý, ø-ý)
         // - Chiffres (0-9)
@@ -81,42 +79,21 @@ export default class UserInputHandler {
        
     }
 
-    //Check the player inputs
-    checkPlayerInput() {
-        if (this.playerInput === this.randomSequence) {
-            console.log("Bien joué !");
-            this.passToNextSequence(); // Resets the sequence for a new
-        } else {
-            console.log("Erreur : La saisie est incorrecte.");
-            this.passToNextSequence(); // Move on to the next sequence
-        }
-    }
-
     //Prpose
     passToNextSequence() {
         this.playerInput = ""; // Resets player input
-        this.randomSequence = this.generateRandomSequence(); // Generates a new sequence
-        this.sequenceText.setText(this.randomSequence); // Updates text on screen
         this.playerInputText.setText(this.playerInput); // Resets user input display
     }
 
     
     //Display the sequence of letters created
     createSequenceDisplay() {
-        this.randomSequence = this.generateRandomSequence(); // Generate a random sequence
-        this.sequenceText = this.scene.add.text(
-            gameConfig.width / 2, 
-            50, 
-            this.randomSequence, 
-            { font: "32px Arial", fill: "#ffffff" }
-        ).setOrigin(0.5, 0.5);
-
         // Add text for player entry
         this.playerInputText = this.scene.add.text(
             gameConfig.width / 2, 
-            100, 
+            50, 
             this.playerInput, // Initially empty
-            { font: "32px Arial", fill: "#ff0000" } // Text in red
+            { font: "32px Arial", fill: "#ffffff" } // Text in red
         ).setOrigin(0.5, 0.5);
     }
 

@@ -1,8 +1,6 @@
 import Phaser from "phaser";
-import Hero from "./../gameEntities/Hero.js";
-import Enemy from "./../gameEntities/Enemy.js";
+import gameConfig from '../gameConfig/gameConfig.js';
 import UserInputHandler from "./UserInputHandler.js";
-
 
 
 class MainScene extends Phaser.Scene {
@@ -15,7 +13,10 @@ class MainScene extends Phaser.Scene {
         this.decorations = []; // To store decorative sprites (trees or other background elements
     
         this.userInputHandler = null; // User input handler
+        this.randomSequence = ""; // Stores the generated sequence
         this.playerInput = ""; // Stores player input
+        this.minSequence = 3; // Minimum sequence length
+        this.maxSequence = 7; // Maximum sequence length
     }
 
     preload() {
@@ -27,15 +28,12 @@ class MainScene extends Phaser.Scene {
         this.createEnvironment(); //Create the world environment (Fog, Ground and trees)
         this.createHero(); //Create the hero
         this.createEnemyGroup(); //Initialize enemy group
-
-
+        this.startEnemySpawner(); //Start generating enemies
+        this.createAnimations(); //Add all animations
 
         // Initialize user input management
         this.userInputHandler = new UserInputHandler(this); //Turning the current scene into a manager
         this.userInputHandler.init();
-
-        this.startEnemySpawner(); //Start generating enemies
-        this.createAnimations(); //Add all animations
 
         this.setHitBoxes();
     }
@@ -43,21 +41,15 @@ class MainScene extends Phaser.Scene {
 
 
     update() {
-        this.hero.moveHeroToRight(); // Move the hero.  Handle hero movement
-    
-        
-        
         this.updateGrounds();  //Manage looping ground
         this.updateTreeEnvironment(); //Manage looping decorations
-        //this.destroyOffscreenEnemies();  // Destroy enemies outside the screen
-        this.destroyOffscreenEnemiesContainer();  // Destroy enemies outside the screen
+        this.moveHero(); // Handle hero movement
+        this.destroyOffscreenEnemies();  // Destroy enemies outside the screen
 
-        //this.updateEnemyTextPositions();
         //Can't display hitboxes of different entities at the same time
         //this.floorHitbox();
         //this.heroHitbox();
         //this.enemyHitbox();
-        this.checkPlayerInputForEnemies();
     }
 
     
@@ -71,94 +63,83 @@ class MainScene extends Phaser.Scene {
     //------------PLAYER----------------
     //Create the character controlled by the player
     createHero() {
-        this.hero = new Hero(this, this.scale.width * 0.5, 630);
+        this.hero = this.physics.add.sprite(gameConfig.width*(50/100), 630, "heroSprite"); //Add a blank sprite as physic object. A sprite is needed to add an animation over
+        this.hero.body.collideWorldBounds = true; //To collide with the window
+        this.hero.body.setSize(20,30); //Collision box size (width, height)
+        this.hero.setOrigin(5,5); //Set a fixed origin for the sprite
+
+        this.hero.body.setOffset(6, 13); //Define sprite offset
+
         //Collision between the character and all the instances of ground
         this.grounds.forEach(ground => {
-            this.physics.add.collider(this.hero.getSprite(), ground);
+            this.physics.add.collider(this.hero, ground);
         });
-        
     }
+
+     
+    //Animate the hero and make it go to the right to counterbalance ground movement going to the left
+    moveHero() {
+        this.hero.setVelocityX(200);
+        this.hero.play("hero-move-right", true);
+    }
+
+
     //------------ENEMIES----------------
     createEnemyGroup(){
         this.enemies = this.physics.add.group(); //Create a group for enemies
         this.physics.add.collider(this.enemies, this.grounds);
     }
 
+    //Create an enemy
     spawnEnemy() {
-        const sequence = this.userInputHandler.generateRandomSequence(); // Generate a sequence for the enemy
-        const enemy = new Enemy(this, this.scale.width + 15, 445, sequence, this.grounds); // Create a new enemy
-        //const enemy = new Enemy(this, gameConfig.width / 2, 50, sequence, this.grounds); // Create a new enemy
-        this.enemies.add(enemy.container); // Add the container to the group
+        // Create a new off-screen enemy on the right
+        const enemy = this.enemies.create(
+            this.scale.width + 230, //Off-screen initial position
+            this.hero.y,            //Same Y level as the hero
+            "enemySprite"           //Enemy texture
+        );  
 
-        // Make the enemy move and play its animation
-        enemy.moveEnemyToLeft();
+        enemy.setVelocityX(-20); // The enemy moves to the left
+        enemy.play("enemy-move-left", true); // Animation deplacement. Play the “enemy-move-left” animation for each enemy in the group
+        enemy.setSize(20, 30); // Hitbox size if required
+        //enemy.setOrigin(0.5, 0.5); // Center the sprite
+        enemy.setOrigin(5, 5);
+        enemy.body.setOffset(6, 13); //Define sprite offset
 
-        //Ground collision management
+
+        //Collision between the character and all the instances of ground
         this.grounds.forEach(ground => {
-            this.physics.add.collider(enemy.container, ground);
+            this.physics.add.collider(enemy, ground);
         });
-
-        console.log(`Enemy spawned with sequence: ${sequence}`);
-
     }
 
-
+    //Create enemies at irregular intervals
     startEnemySpawner() {
-        const minDelay = 1000; // Délai minimum en millisecondes
-        const maxDelay = 3000; // Délai maximum en millisecondes
-
-        // Setting up a repeated event to call spawnEnemy
+        const minDelay = 1000; // Minimum delay (1 second)
+        const maxDelay = 3000; // Maximum delay (3 seconds)
+    
+        //Create a repeated event to generate enemies
         this.time.addEvent({
-            delay: Phaser.Math.Between(minDelay, maxDelay), // Random delay
+            delay: Phaser.Math.Between(minDelay, maxDelay), // Random initial interval
             callback: () => {
-                this.spawnEnemy(); // Call spawnEnemy
-                this.startEnemySpawner(); // Relaunch the spawner for the next intervals
+                this.spawnEnemy(); // Generates an enemy
+                //console.log("Ennemy created")
+                this.startEnemySpawner(); // Relaunches a new irregular interval
             },
-            loop: false,  // Do not loop automatically
+            loop: false, // Event is repeated manually (recurse)
         });
     }
 
-    
-
-  /*  destroyOffscreenEnemiesContainer() {
+    //Destroy enemy instance when out of the sceen on the left
+    destroyOffscreenEnemies(){
+        // Scroll through the enemies and destroy those that leave the screen
         this.enemies.getChildren().forEach(enemy => {
-            if (enemy.x < -50) { // If the container is off-screen
-                enemy.destroy(); // Détruire le container, ce qui détruit également son contenu
-                console.log("Enemy destroyed with sequence:", enemy.sequence);
-            }
-        });
-    }*/
-
-    destroyOffscreenEnemiesContainer() {
-        this.enemies.getChildren().forEach(enemy => {
-            const enemyInstance = enemy.enemyInstance; // Récupérez l'instance Enemy
-            if (enemyInstance && enemyInstance.isOutOfBounds()) { // Vérifiez si hors écran
-                enemyInstance.destroy(); // Détruisez l'ennemi
-                console.log("Enemy destroyed with sequence:", enemyInstance.sequence);
+            if (enemy.x < -50) { // If the enemy is off-screen on the left
+                enemy.destroy(); // Eliminates the enemy
+                console.log("Ennemy Destroyed !")
             }
         });
     }
-
-
-
-    checkPlayerInputForEnemies(playerInput) {
-        this.enemies.getChildren().forEach(enemy => {
-            if (enemy.sequence === playerInput) {
-                console.log("Correct input! Enemy destroyed:", enemy.sequence);
-    
-                // Destroy the enemy container and its content
-                enemy.destroy();
-    
-                // Update score or trigger some feedback here
-            }
-        });
-    }
-
-
-
-    
-
-    
 
 
 
@@ -202,8 +183,8 @@ class MainScene extends Phaser.Scene {
         const groundWidth = 700; // Largeur d'un morceau de sol
         this.grounds.forEach(ground => {
             if (ground.x + groundWidth / 2 < 0) {
-                // Repositionnez ce morceau à la fin
-                ground.x += groundWidth * this.grounds.length;
+            // Repositionnez ce morceau à la fin
+            ground.x += groundWidth * this.grounds.length;
             }
         });
     }
@@ -246,6 +227,15 @@ class MainScene extends Phaser.Scene {
     // ---------------- ANIMATIONS ----------------
     //Create animations and associate it with a sprite
     createAnimations() {
+        // Creating animations
+        //Frames for right
+        this.anims.create({
+            key: "hero-move-right",
+            frames: this.anims.generateFrameNumbers("RunAnimation", { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+
         this.anims.create({
             key: "enemy-move-left",
             frames: this.anims.generateFrameNumbers("EnemyRunAttackAnimation", { start: 0, end: 4 }),
