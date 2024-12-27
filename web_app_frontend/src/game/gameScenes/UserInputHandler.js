@@ -5,7 +5,7 @@ export default class UserInputHandler {
         this.scene = scene; // Reference to parent scene
         this.playerInput = ""; // Saisie utilisateur
         this.minSequence = 1; // Minimum sequence length
-        this.maxSequence = 2; // Maximum sequence length
+        this.maxSequence = 1; // Maximum sequence length
         this.playerInputText = null;
         }
 
@@ -18,7 +18,7 @@ export default class UserInputHandler {
     //Generate a random sequence of letters.
     generateRandomSequence() {
         //Set of valid characters
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzà-ö0123456789&\"'()-_ç@)=/*?\\!§";
+        const letters = "abcdefghijklmnopqrstuvwxyzà-ö0123456789&\"'()-_ç@)=*?!§";
 
         // Determine a random length between minSequence and maxSequence
         const sequenceLength = Math.floor(Math.random() * (this.maxSequence - this.minSequence + 1)) + this.minSequence;
@@ -54,15 +54,14 @@ export default class UserInputHandler {
             } 
             else {
                 console.log("Erreur : La saisie doit contenir entre " + this.minSequence + " et " + this.maxSequence + " caractères.");
-                //this.passToNextSequence(); // Go directly to the next sequence
             }
             return;
         }
          
-        // - Lettres majuscules et minuscules (A-Z, a-z)
-        // - Lettres accentuées majuscules et minuscules (À-Ö, à-ö, Ø-Ý, ø-ý)
-        // - Chiffres (0-9)
-        // - Caractères spéciaux (&, ", ', (, -, _, ç, @, ), =, /, *, ?, \, !, §)
+        // - Upper and lower case letters (A-Z, a-z)
+        // - Accented upper- and lower-case letters (À-Ö, à-ö, Ø-Ý, ø-ý)
+        // - Figures (0-9)
+        // - Special characters (&, ", ', (, -, _, ç, @, ), =, /, *, ?, \, !, §)
         const validKeyPattern = /^[A-Za-zÀ-ÖØ-Ýà-öø-ý0-9&"'()_ç@)=/*?\\!§-]$/;
     
         if (validKeyPattern.test(key)) {
@@ -79,13 +78,6 @@ export default class UserInputHandler {
        
     }
 
-    //Prpose
-    passToNextSequence() {
-        this.playerInput = ""; // Resets player input
-        this.playerInputText.setText(this.playerInput); // Resets user input display
-    }
-
-    
     //Display the sequence of letters created
     createSequenceDisplay() {
         // Add text for player entry
@@ -99,4 +91,3 @@ export default class UserInputHandler {
 
 
 }
-  
