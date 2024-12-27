@@ -1,5 +1,5 @@
 export default class Enemy {
-    constructor(scene, x, y, sequence, grounds) {
+    constructor(scene, x, y, sequence) {
         this.scene = scene;
         this.sequence = sequence;
 
