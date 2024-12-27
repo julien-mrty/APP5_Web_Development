@@ -1,5 +1,5 @@
 export default class Enemy {
-    constructor(scene, x, y, sequence) {
+    constructor(scene, x, y, sequence, grounds) {
         this.scene = scene;
         this.sequence = sequence;
 
@@ -22,7 +22,8 @@ export default class Enemy {
 
         this.scene.physics.world.enable(this.container); //Enable physics on the container
         this.container.body.setSize(30, 30); // Set the size of the hitbox
-        //this.body.setOffset(-7, -7); // Adjust the hitbox position
+        this.container.body.setOffset(-7, -7); // Adjust the hitbox position.
+
 
     }
 

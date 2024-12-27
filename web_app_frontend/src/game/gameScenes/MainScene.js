@@ -13,9 +13,10 @@ class MainScene extends Phaser.Scene {
         this.enemies = null; // Enemy group
         this.grounds = []; // Grounds (static elements)
         this.decorations = []; // To store decorative sprites (trees or other background elements
-    
         this.userInputHandler = null; // User input handler
         this.playerInput = ""; // Stores player input
+        this.minEnemySpawnDelay = 1000; // Minimum delay in milliseconds
+        this.maxEnemySpawnDelay = 3000; // Maximum delay in milliseconds
     }
 
     preload() {
@@ -25,10 +26,9 @@ class MainScene extends Phaser.Scene {
     create() {
         this.createControls(); // Add user controls
         this.createEnvironment(); //Create the world environment (Fog, Ground and trees)
+        this.createEnemyGroup(); //Initialize enemy group. Must be called before hero or the collision with it won't work
         this.createHero(); //Create the hero
-        this.createEnemyGroup(); //Initialize enemy group
-
-
+        this.createLivesDisplay(); //Display lives
 
         // Initialize user input management
         this.userInputHandler = new UserInputHandler(this); //Turning the current scene into a manager
@@ -37,30 +37,29 @@ class MainScene extends Phaser.Scene {
         this.startEnemySpawner(); //Start generating enemies
         this.createAnimations(); //Add all animations
 
-        this.setHitBoxes();
+        //this.setHitBoxes();
+        
     }
-
-
 
     update() {
         this.hero.moveHeroToRight(); // Move the hero.  Handle hero movement
     
-        
-        
         this.updateGrounds();  //Manage looping ground
         this.updateTreeEnvironment(); //Manage looping decorations
         //this.destroyOffscreenEnemies();  // Destroy enemies outside the screen
         this.destroyOffscreenEnemiesContainer();  // Destroy enemies outside the screen
+
+        this.checkPlayerInputForEnemies();
 
         //this.updateEnemyTextPositions();
         //Can't display hitboxes of different entities at the same time
         //this.floorHitbox();
         //this.heroHitbox();
         //this.enemyHitbox();
-        this.checkPlayerInputForEnemies();
+        
+        //this.characterHitBoxes();
     }
 
-    
     // ---------------- CONTROLS ----------------
     createControls() {
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -72,26 +71,65 @@ class MainScene extends Phaser.Scene {
     //Create the character controlled by the player
     createHero() {
         this.hero = new Hero(this, this.scale.width * 0.5, 630);
+
         //Collision between the character and all the instances of ground
         this.grounds.forEach(ground => {
-            this.physics.add.collider(this.hero.getSprite(), ground);
+            this.physics.add.collider(this.hero.sprite, ground);
+            //console.log(this.hero.sprite.body)
         });
+
+        // Detect collisions between heroes and enemies.
+        this.physics.add.overlap(
+            this.hero.getSprite(), 
+            this.enemies, 
+            (heroSprite, enemyContainer) => {
+                const enemy = enemyContainer.enemyInstance;
+                if (enemy) {
+                    this.hero.takeDamage();
+                    enemy.destroy(); //Remove enemy after collision
+                }
+            },
+            null,
+            this
+        );
         
     }
+
+    //Initializes the heart chart representing the player's life
+    createLivesDisplay() {
+        this.hearts = []; //Array for storing hearts sprites
+        this.updateLivesDisplay(); //Initializes hearts according to lives
+    }
+
+    //Updates heart count display according to player's hit points
+    updateLivesDisplay() {
+        console.log(`Mise à jour des cœurs : ${this.hero.lives} restants`);
+        // Deletes all displayed hearts
+        this.hearts.forEach(heart => heart.destroy());
+        this.hearts = []; // Reset the table
+    
+        // Display a heart for each remaining life
+        for (let i = 0; i < this.hero.lives; i++) {
+            const heart = this.add.image(20 + i * 30, 20, 'heartSprite'); // Offset each heart by 30px
+            heart.setScrollFactor(0); // Fixes hearts on screen (not affected by camera movement)
+            this.hearts.push(heart);
+        }
+    }
+
     //------------ENEMIES----------------
+    //Create an enemy group containing all the generated enemies and add collision to them
     createEnemyGroup(){
         this.enemies = this.physics.add.group(); //Create a group for enemies
         this.physics.add.collider(this.enemies, this.grounds);
     }
 
+    //Create an enemy 
     spawnEnemy() {
         const sequence = this.userInputHandler.generateRandomSequence(); // Generate a sequence for the enemy
         const enemy = new Enemy(this, this.scale.width + 15, 445, sequence, this.grounds); // Create a new enemy
-        //const enemy = new Enemy(this, gameConfig.width / 2, 50, sequence, this.grounds); // Create a new enemy
         this.enemies.add(enemy.container); // Add the container to the group
 
-        // Make the enemy move and play its animation
-        enemy.moveEnemyToLeft();
+        enemy.moveEnemyToLeft(); // Make the enemy move and play its animation
 
         //Ground collision management
         this.grounds.forEach(ground => {
@@ -99,17 +137,13 @@ class MainScene extends Phaser.Scene {
         });
 
         console.log(`Enemy spawned with sequence: ${sequence}`);
-
     }
 
-
+    //Make enemies appear intermittently
     startEnemySpawner() {
-        const minDelay = 1000; // Délai minimum en millisecondes
-        const maxDelay = 3000; // Délai maximum en millisecondes
-
         // Setting up a repeated event to call spawnEnemy
         this.time.addEvent({
-            delay: Phaser.Math.Between(minDelay, maxDelay), // Random delay
+            delay: Phaser.Math.Between(this.minEnemySpawnDelay, this.maxEnemySpawnDelay), // Random delay
             callback: () => {
                 this.spawnEnemy(); // Call spawnEnemy
                 this.startEnemySpawner(); // Relaunch the spawner for the next intervals
@@ -118,29 +152,19 @@ class MainScene extends Phaser.Scene {
         });
     }
 
-    
-
-  /*  destroyOffscreenEnemiesContainer() {
-        this.enemies.getChildren().forEach(enemy => {
-            if (enemy.x < -50) { // If the container is off-screen
-                enemy.destroy(); // Détruire le container, ce qui détruit également son contenu
-                console.log("Enemy destroyed with sequence:", enemy.sequence);
-            }
-        });
-    }*/
-
+    //Destroy an enemy when off screen to improve performances
     destroyOffscreenEnemiesContainer() {
         this.enemies.getChildren().forEach(enemy => {
-            const enemyInstance = enemy.enemyInstance; // Récupérez l'instance Enemy
-            if (enemyInstance && enemyInstance.isOutOfBounds()) { // Vérifiez si hors écran
-                enemyInstance.destroy(); // Détruisez l'ennemi
+            const enemyInstance = enemy.enemyInstance; // Recover the Enemy instance
+            if (enemyInstance && enemyInstance.isOutOfBounds()) { // Check if off-screen
+                enemyInstance.destroy(); // Destroy the enemy
                 console.log("Enemy destroyed with sequence:", enemyInstance.sequence);
             }
         });
     }
 
-
-
+    //Checks whether the player's inputs match the letter sequence associated with one of the enemies
+    //Destroy it if it does
     checkPlayerInputForEnemies(playerInput) {
         this.enemies.getChildren().forEach(enemy => {
             if (enemy.sequence === playerInput) {
@@ -149,7 +173,7 @@ class MainScene extends Phaser.Scene {
                 // Destroy the enemy container and its content
                 enemy.destroy();
     
-                // Update score or trigger some feedback here
+                // Think to update score or trigger some feedback here
             }
         });
     }
@@ -159,9 +183,6 @@ class MainScene extends Phaser.Scene {
     
 
     
-
-
-
     //------------ENVIRONMENT----------------
     //Create the background (Fog, ground and trees)
     createEnvironment() {
@@ -170,7 +191,7 @@ class MainScene extends Phaser.Scene {
         this.createGrounds();
     }
 
-
+    //Create the gray fog in the background
     createFog() {
         //Load fog image to cover entire screen
         this.fog = this.add.image(0, 0, "Fog"); // Ajoutez l'image à la position (0,0)
@@ -179,6 +200,7 @@ class MainScene extends Phaser.Scene {
 
     }
 
+    //Create the ground
     createGrounds(){
         this.grounds = []; //Table for storing all ground instances
         const groundWidth = 700; // Floor width (corresponds to the image)
@@ -208,6 +230,7 @@ class MainScene extends Phaser.Scene {
         });
     }
 
+    //Crete the trees
     createTreeEnvironment(){
         const decorationWidth = 200; // Adjust to the actual width of “tree1”.
         const numDecorations = Math.ceil(this.scale.width / decorationWidth) + 2;
@@ -244,7 +267,7 @@ class MainScene extends Phaser.Scene {
 
      
     // ---------------- ANIMATIONS ----------------
-    //Create animations and associate it with a sprite
+    //Create enemy animation and associate it with a sprite
     createAnimations() {
         this.anims.create({
             key: "enemy-move-left",
@@ -255,15 +278,29 @@ class MainScene extends Phaser.Scene {
       
     }
 
-  
-
-
     //Initialiez hitboxes
     setHitBoxes() {
         this.hitboxDebug = this.add.graphics();
         this.hitboxDebug.lineStyle(2, 0xff0000); // Set a 2px red border
     }
 
+    //Display hero and enemy hitboxes
+    characterHitBoxes(){
+        this.hitboxDebug.clear();
+        this.hitboxDebug.lineStyle(2, 0xff0000);
+        
+        //Hero
+        const heroBody = this.hero.getSprite().body;
+        this.hitboxDebug.strokeRect(heroBody.x, heroBody.y, heroBody.width, heroBody.height);
+        
+        //Ennemies
+        this.enemies.getChildren().forEach(enemy => {
+            if (enemy.body) {
+                this.hitboxDebug.strokeRect(enemy.body.x, enemy.body.y, enemy.body.width, enemy.body.height);
+            }
+        });
+    }
+   
     //Create the hitbox of the floor
     floorHitbox() {
        //View the floor hitbox
