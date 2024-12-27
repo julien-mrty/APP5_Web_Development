@@ -5,7 +5,7 @@ export default class UserInputHandler {
         this.scene = scene; // Reference to parent scene
         this.playerInput = ""; // Saisie utilisateur
         this.minSequence = 1; // Minimum sequence length
-        this.maxSequence = 2; // Maximum sequence length
+        this.maxSequence = 1; // Maximum sequence length
         this.playerInputText = null;
         }
 
@@ -18,7 +18,7 @@ export default class UserInputHandler {
     //Generate a random sequence of letters.
     generateRandomSequence() {
         //Set of valid characters
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzà-ö0123456789&\"'()-_ç@)=/*?\\!§";
+        const letters = "abcdefghijklmnopqrstuvwxyzà-ö0123456789&\"'()-_ç@)=*?!§";
 
         // Determine a random length between minSequence and maxSequence
         const sequenceLength = Math.floor(Math.random() * (this.maxSequence - this.minSequence + 1)) + this.minSequence;

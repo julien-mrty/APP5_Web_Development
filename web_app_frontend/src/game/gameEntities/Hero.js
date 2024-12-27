@@ -11,6 +11,7 @@ export default class Hero {
 
         //Lives
         this.lives = 3; // Add life points
+        this.attackPoints = 0;
         this.isInvulnerable = false; // To avoid losing several lives quickly when colliding with ennemies
 
         // Initialize animations
@@ -20,6 +21,24 @@ export default class Hero {
             frameRate: 10,
             repeat: -1,
         });
+    }
+
+    //Increases attack points
+    addAttackPoint() {
+        this.attackPoints += 1;
+        console.log(`Points d'attaque : ${this.attackPoints}`);
+        this.scene.updateAttackPointsDisplay(); // Met à jour l'affichage des points
+    }
+
+    //Use an attack point to kill   an enemy
+    useAttackPoint() {
+        if (this.attackPoints > 0) {
+            this.attackPoints -= 1;
+            console.log(`Points d'attaque restants : ${this.attackPoints}`);
+            this.scene.updateAttackPointsDisplay(); // Updates points display
+            return true; // Indicates that a point has been used
+        }
+        return false; //No points available
     }
 
     //Removes one hit point from the player if he's not in a state of invulnerability
@@ -54,6 +73,9 @@ export default class Hero {
         this.scene.physics.pause(); // Stop the game
         //Think to call a function to display a defeat screen
     }
+
+
+
 
     //Animate the hero and make it go to the right to counterbalance ground movement going to the left
     moveHeroToRight() {

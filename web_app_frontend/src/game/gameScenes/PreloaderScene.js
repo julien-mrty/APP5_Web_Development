@@ -11,6 +11,7 @@ import Tree1 from "/src/gameAssets/gameBackgrounds/Tree1.png"
 
 //User Interface
 import Heart from "/src/gameAssets/gameSprites/heart.png"
+import Sword from "/src/gameAssets/gameSprites/sword.png"
 
 
 class PreloaderScene extends Phaser.Scene {
@@ -23,6 +24,7 @@ class PreloaderScene extends Phaser.Scene {
         this.load.image("Fog", Fog); // Load a texture named "Fog"
         this.load.image("tree1", Tree1); // Load a texture named "Tree1"
         this.load.image('heartSprite', Heart); //Load the sprite for the heart
+        this.load.image('swordSprite', Sword); //Load the sprite for the heart
 
         // Load a spritesheet with multiple frames
         this.load.spritesheet('RunAnimation', HeroRunAnimation, {

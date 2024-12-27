@@ -29,6 +29,7 @@ class MainScene extends Phaser.Scene {
         this.createEnemyGroup(); //Initialize enemy group. Must be called before hero or the collision with it won't work
         this.createHero(); //Create the hero
         this.createLivesDisplay(); //Display lives
+        this.createAttackPointsDisplay();
 
         // Initialize user input management
         this.userInputHandler = new UserInputHandler(this); //Turning the current scene into a manager
@@ -85,8 +86,15 @@ class MainScene extends Phaser.Scene {
             (heroSprite, enemyContainer) => {
                 const enemy = enemyContainer.enemyInstance;
                 if (enemy) {
-                    this.hero.takeDamage();
-                    enemy.destroy(); //Remove enemy after collision
+                    if (this.hero.useAttackPoint()) {
+                        // If an attack point is used, kill the enemy
+                        console.log("Enemy killed with an attack point!");
+                        enemy.destroy();
+                    }
+                    else { //Otherwise, the hero loses a life
+                        this.hero.takeDamage();
+                        enemy.destroy(); //Remove enemy after collision
+                    }
                 }
             },
             null,
@@ -95,13 +103,13 @@ class MainScene extends Phaser.Scene {
         
     }
 
-    //Initializes the heart chart representing the player's life
+    //Initializes the heart chart representing the player's life 
     createLivesDisplay() {
         this.hearts = []; //Array for storing hearts sprites
         this.updateLivesDisplay(); //Initializes hearts according to lives
     }
 
-    //Updates heart count display according to player's hit points
+    //Updates the number of hearts displayed on screen according to the number of life points
     updateLivesDisplay() {
         console.log(`Mise à jour des cœurs : ${this.hero.lives} restants`);
         // Deletes all displayed hearts
@@ -115,6 +123,28 @@ class MainScene extends Phaser.Scene {
             this.hearts.push(heart);
         }
     }
+
+    //Initialize the sword sprite representing player's attack points
+    createAttackPointsDisplay(){
+        //Add sword icon
+        this.swordIcon = this.add.image(20, 47, 'swordSprite'); // Position below the hearts
+        this.swordIcon.setScrollFactor(0); // Fixes icon on screen
+        this.swordIcon.setScale(1.5); // Enlarge image to 150% of its original size
+
+        //Position the text indicating the number of attack points
+        this.attackPointsText = this.add.text(
+            50, 40, 
+            `${this.hero.attackPoints}`, // Texte initial
+            { font: "20px Arial", fill: "#ffffff" }
+        ).setScrollFactor(0);
+    }
+
+    //Updates the number of player's attack points
+    updateAttackPointsDisplay() {
+        this.attackPointsText.setText(`${this.hero.attackPoints}`);
+    }
+
+
 
     //------------ENEMIES----------------
     //Create an enemy group containing all the generated enemies and add collision to them
@@ -169,11 +199,11 @@ class MainScene extends Phaser.Scene {
         this.enemies.getChildren().forEach(enemy => {
             if (enemy.sequence === playerInput) {
                 console.log("Correct input! Enemy destroyed:", enemy.sequence);
+
+                // Ajoute un point d'attaque au héros
+                this.hero.addAttackPoint();
     
-                // Destroy the enemy container and its content
-                enemy.destroy();
-    
-                // Think to update score or trigger some feedback here
+                //Think to update score or trigger some feedback here
             }
         });
     }
