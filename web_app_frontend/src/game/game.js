@@ -1,11 +1,13 @@
 import Phaser from "phaser";
 import gameConfig from "./gameConfig/gameConfig";
-import MainScene from "./gameScenes/MainScene";
 import PreloaderScene from "./gameScenes/PreloaderScene";
+import MainMenuScene from "./gameScenes/MainMenuScene.js";
+import MainScene from "./gameScenes/MainScene";
+import ScoreScene from "./gameScenes/ScoreScene.js";
 
 const config = {
     ...gameConfig,
-    scene: [PreloaderScene, MainScene], // Add scenes
+    scene: [PreloaderScene, MainMenuScene, ScoreScene, MainScene], // Add scenes
 };
 
 let game;
