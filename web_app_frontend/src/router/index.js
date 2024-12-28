@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LogIn from '../components/LogIn.vue';
 import Home from '../components/Home.vue';
 import Play from '../components/PlayGame.vue';
+import RunningGame from '../components/RunningGame.vue';
 import Scores from '../components/GameScores.vue';
 import SignUp from "../components/SignUp.vue";
 
@@ -29,6 +30,12 @@ const routes = [
     path: '/playgame',
     name: 'PlayGame',
     component: Play,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/runninggame',
+    name: 'RunningGame',
+    component: RunningGame,
     meta: { requiresAuth: true }
   },
   {
