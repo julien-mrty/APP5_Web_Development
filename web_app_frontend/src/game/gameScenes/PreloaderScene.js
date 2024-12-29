@@ -40,8 +40,8 @@ class PreloaderScene extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start("MainMenuScene");
-        //this.scene.start("MainScene");
+        //this.scene.start("MainMenuScene");
+        this.scene.start("MainScene");
     }
 }
 

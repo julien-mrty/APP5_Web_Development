@@ -1,6 +1,7 @@
 export default class Hero {
     constructor(scene, x, y) {
         this.scene = scene;
+        this.heroVelocity = 200;
 
         //Graphic appearance
         this.sprite = scene.physics.add.sprite(x, y, "heroSprite"); // Create the hero sprite. //Add a blank sprite as physic object. A sprite is needed to add an animation over
@@ -10,7 +11,7 @@ export default class Hero {
         this.sprite.body.setOffset(6, 13); //Define sprite offset
 
         //Lives
-        this.lives = 3; // Add life points
+        this.lives = 1; // Add life points
         this.attackPoints = 0;
         this.isInvulnerable = false; // To avoid losing several lives quickly when colliding with ennemies
 
@@ -66,22 +67,81 @@ export default class Hero {
         }
     }
 
-    //Kill the hero
-    die() {
-        console.log("Hero is dead!");
-        this.sprite.setTint(0xff0000); // Add a visual effect for death
-        this.scene.physics.pause(); // Stop the game
-        //Think to call a function to display a defeat screen
-    }
-
-
-
 
     //Animate the hero and make it go to the right to counterbalance ground movement going to the left
     moveHeroToRight() {
-        this.sprite.setVelocityX(200); // Move right
+        if (this.scene.isGameOver) {
+            this.heroVelocity = 0
+            return; // Do not update decorations if the game is over
+        }
+        this.sprite.setVelocityX(this.heroVelocity); // Move right
         this.sprite.play("hero-move-right", true); // Play animation
     }
+
+    //Kill the hero
+    die() {
+        this.scene.isGameOver = true; // Indiquer que le jeu est terminé
+        console.log("Hero is dead!");
+        this.sprite.setTint(0xff0000); // Add a visual effect for death
+        this.scene.physics.pause(); // Stop the game
+
+        //Displays the final score
+        const { width, height } = this.scene.scale;
+        this.scene.add.text(width / 2, height / 2, `Game Over\nScore: ${Math.floor(this.scene.score)} m`, {
+            font: "32px Arial",
+            fill: "#ffffff",
+            align: "center"
+        }).setOrigin(0.5);
+
+        //this.endGame();
+
+
+
+        //Think to call a function to display a defeat screen
+    }
+
+    //Stops all game processes when the player dies
+    /*endGame(){
+        const newEnemySpeed = -200; //change current enemies speed to give the illusion that they're running fast
+        this.scene.changeEnemySpeed(newEnemySpeed);
+
+        // Stop the hero's movement
+        this.sprite.setVelocity(0); // Set speed to 0
+        this.sprite.body.allowGravity = false; // Deactivate gravity to keep it stationary
+
+        // Disable enemy overlay 
+        this.scene.physics.world.removeCollider(this.scene.heroEnemyCollider);
+
+
+        // Stop floors
+        this.scene.grounds.forEach(ground => {
+            if (ground.body) {
+                ground.body.setVelocityX(0); // Stop physical movement
+            } 
+        });
+
+        // Stop decorating
+        this.scene.decorations.forEach(decoration => {
+            decoration.x = decoration.x; //Freezes the current position of the decorations
+        });
+
+        //Stop score update
+        this.scene.updateScore = () => {}; //Replace the method so that it does nothing
+
+    
+        // Continue with hero animation only. Replace with death animation
+        //this.sprite.play("hero-move-right", true);
+
+        //Displays the final score
+        const { width, height } = this.scene.scale;
+        this.scene.add.text(width / 2, height / 2, `Game Over\nScore: ${Math.floor(this.scene.score)} m`, {
+            font: "32px Arial",
+            fill: "#ffffff",
+            align: "center"
+        }).setOrigin(0.5);
+    }*/
+
+
 
     getSprite() {
         return this.sprite;
