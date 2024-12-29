@@ -5,10 +5,11 @@ import MainMenuScene from "./gameScenes/MainMenuScene.js";
 import MainScene from "./gameScenes/MainScene";
 import ScoreScene from "./gameScenes/ScoreScene.js";
 import PauseScene from "./gameScenes/PauseScene.js";
+import GameOverScene from './gameScenes/GameOverScene';
 
 const config = {
     ...gameConfig,
-    scene: [PreloaderScene, MainMenuScene, ScoreScene, MainScene, PauseScene], // Add scenes
+    scene: [PreloaderScene, MainMenuScene, ScoreScene, MainScene, PauseScene, GameOverScene], // Add scenes
 };
 
 let game;

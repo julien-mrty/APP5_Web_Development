@@ -37,11 +37,33 @@ class PreloaderScene extends Phaser.Scene {
             frameWidth: 42, //width of a single frame in the spridesheet 
             frameHeight: 42 //height of a single frame in the spridesheet
         });//Player sprite
+
+
     }
 
     create() {
-        //this.scene.start("MainMenuScene");
-        this.scene.start("MainScene");
+        // Initialize animations
+        if (!this.anims.exists('hero-move-right')) {
+            this.anims.create({
+                key: "hero-move-right",
+                frames: this.anims.generateFrameNumbers("RunAnimation", { start: 0, end: 5 }),
+                frameRate: 10,
+                repeat: -1,
+            });
+        }
+
+        if (!this.anims.exists('enemy-move-left')) {
+            this.anims.create({
+                key: "enemy-move-left",
+                frames: this.anims.generateFrameNumbers("EnemyRunAttackAnimation", { start: 0, end: 4 }),
+                frameRate: 10,
+                repeat: -1,
+            });
+        }
+
+
+        this.scene.start("MainMenuScene");
+        //this.scene.start("MainScene");
     }
 }
 

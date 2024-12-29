@@ -31,9 +31,6 @@ export default class Enemy {
 
     //Animate the enemy and make it go to the left
     moveEnemyToLeft() {
-        if (this.scene.isGameOver) {
-            this.enemyVelocity = -200
-        }
         this.container.body.setVelocityX(this.enemyVelocity); // Moving the container to the left
         this.sprite.play("enemy-move-left", true); // Play the animation for moving left
     }
