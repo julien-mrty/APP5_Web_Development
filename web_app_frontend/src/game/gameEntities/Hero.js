@@ -11,17 +11,10 @@ export default class Hero {
         this.sprite.body.setOffset(6, 13); //Define sprite offset
 
         //Lives
-        this.lives = 1; // Add life points
+        this.lives = 3; // Add life points
         this.attackPoints = 0;
         this.isInvulnerable = false; // To avoid losing several lives quickly when colliding with ennemies
 
-        // Initialize animations
-        this.scene.anims.create({
-            key: "hero-move-right",
-            frames: this.scene.anims.generateFrameNumbers("RunAnimation", { start: 0, end: 5 }),
-            frameRate: 10,
-            repeat: -1,
-        });
     }
 
     //Increases attack points
@@ -74,6 +67,9 @@ export default class Hero {
             this.heroVelocity = 0
             return; // Do not update decorations if the game is over
         }
+
+      
+
         this.sprite.setVelocityX(this.heroVelocity); // Move right
         this.sprite.play("hero-move-right", true); // Play animation
     }
@@ -83,19 +79,8 @@ export default class Hero {
         this.scene.isGameOver = true; // Indiquer que le jeu est terminé
         console.log("Hero is dead!");
         this.sprite.setTint(0xff0000); // Add a visual effect for death
-        this.scene.physics.pause(); // Stop the game
-
-        //Displays the final score
-        const { width, height } = this.scene.scale;
-        this.scene.add.text(width / 2, height / 2, `Game Over\nScore: ${Math.floor(this.scene.score)} m`, {
-            font: "32px Arial",
-            fill: "#ffffff",
-            align: "center"
-        }).setOrigin(0.5);
-
-        //this.endGame();
-
-
+        
+        this.scene.scene.start('GameOverScene', { score: this.scene.score }); // Call the GameOver scene
 
         //Think to call a function to display a defeat screen
     }

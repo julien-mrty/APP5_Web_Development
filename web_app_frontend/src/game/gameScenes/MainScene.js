@@ -20,7 +20,6 @@ class MainScene extends Phaser.Scene {
 
         this.score = 0; //Player score
         this.scoreText = null; //Text displaying the score
-
         this.isGameOver = false; //Indicates when the game is over
     }
 
@@ -28,7 +27,11 @@ class MainScene extends Phaser.Scene {
         // Assets will already be loaded by PreloaderScene
     }
 
+    
+
     create() {
+        this.resetVariables();
+
         this.createControls(); // Add user controls
         this.createPauseControls(); // Add user controls for pause menu
         this.createEnvironment(); //Create the world environment (Fog, Ground and trees)
@@ -43,7 +46,7 @@ class MainScene extends Phaser.Scene {
         this.userInputHandler.init();
 
         this.startEnemySpawner(); //Start generating enemies
-        this.createAnimations(); //Add all animations
+
 
         //this.setHitBoxes();
         
@@ -71,6 +74,13 @@ class MainScene extends Phaser.Scene {
         // Stopper les mises à jour inutiles
 
        
+    }
+
+    //Reset variables to avoid incoherent behavious where the hero doesn't nor have animation not hitboxes 
+    resetVariables(){
+        this.isGameOver = false; // Reset end-of-game status
+        this.hero = null; // Reset hero
+        this.score = 0; // Reset score
     }
 
     // ---------------- SCORE ----------------
@@ -258,7 +268,7 @@ class MainScene extends Phaser.Scene {
     }
 
     //When the hero dies, change the speed of the enemies to give the illusion of a fast race.
-    changeEnemySpeed(newSpeed) {
+   /* changeEnemySpeed(newSpeed) {
         this.enemies.getChildren().forEach(enemy => {
             if (enemy.body) {
                 enemy.body.setVelocityX(newSpeed); // Appliquer la nouvelle vitesse
@@ -267,7 +277,7 @@ class MainScene extends Phaser.Scene {
                 console.warn("Enemy does not have a body:", enemy);
             }
         });
-    }
+    }*/
 
 
 
@@ -362,15 +372,7 @@ class MainScene extends Phaser.Scene {
      
     // ---------------- ANIMATIONS ----------------
     //Create enemy animation and associate it with a sprite
-    createAnimations() {
-        this.anims.create({
-            key: "enemy-move-left",
-            frames: this.anims.generateFrameNumbers("EnemyRunAttackAnimation", { start: 0, end: 4 }),
-            frameRate: 10,
-            repeat: -1,
-        });
-      
-    }
+
 
 
     // ---------------- HITBOXES ----------------
