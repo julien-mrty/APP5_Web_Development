@@ -17,6 +17,11 @@ class MainScene extends Phaser.Scene {
         this.playerInput = ""; // Stores player input
         this.minEnemySpawnDelay = 1000; // Minimum delay in milliseconds
         this.maxEnemySpawnDelay = 3000; // Maximum delay in milliseconds
+
+        this.score = 0; //Player score
+        this.scoreText = null; //Text displaying the score
+
+        this.isGameOver = false; //Indicates when the game is over
     }
 
     preload() {
@@ -25,11 +30,13 @@ class MainScene extends Phaser.Scene {
 
     create() {
         this.createControls(); // Add user controls
+        this.createPauseControls(); // Add user controls for pause menu
         this.createEnvironment(); //Create the world environment (Fog, Ground and trees)
         this.createEnemyGroup(); //Initialize enemy group. Must be called before hero or the collision with it won't work
         this.createHero(); //Create the hero
         this.createLivesDisplay(); //Display lives
         this.createAttackPointsDisplay();
+        this.createScoreDisplay(); //Initialize score display
 
         // Initialize user input management
         this.userInputHandler = new UserInputHandler(this); //Turning the current scene into a manager
@@ -42,8 +49,8 @@ class MainScene extends Phaser.Scene {
         
     }
 
-    update() {
-        this.hero.moveHeroToRight(); // Move the hero.  Handle hero movement
+    update(time, delta) {
+        this.hero.moveHeroToRight(); //Move the hero
     
         this.updateGrounds();  //Manage looping ground
         this.updateTreeEnvironment(); //Manage looping decorations
@@ -52,6 +59,8 @@ class MainScene extends Phaser.Scene {
 
         this.checkPlayerInputForEnemies();
 
+        this.updateScore(delta); //Score update
+
         //this.updateEnemyTextPositions();
         //Can't display hitboxes of different entities at the same time
         //this.floorHitbox();
@@ -59,12 +68,52 @@ class MainScene extends Phaser.Scene {
         //this.enemyHitbox();
         
         //this.characterHitBoxes();
+        // Stopper les mises à jour inutiles
+
+       
+    }
+
+    // ---------------- SCORE ----------------
+    //Create the text to display the score
+    createScoreDisplay() {
+        this.scoreText = this.add.text(5, 70, `Score: 0 m`, {
+            font: "20px Arial",
+            fill: "#ffffff"
+        }).setScrollFactor(0); // Set score display on screen
+    }
+
+    //Updates score based on elapsed time
+    updateScore(delta) {
+        if (this.isGameOver) {
+            return; // Don't update the score if the game is over
+        }
+        const speed = 200; //Speed in pixels per second
+        const pixelsToMeters = 0.01; // Pixel -> meter conversion
+
+        this.score += speed * pixelsToMeters * (delta / 1000); // Convert delta (ms) to seconds
+        this.scoreText.setText(`Score: ${Math.floor(this.score)} m`); // Update display
     }
 
     // ---------------- CONTROLS ----------------
     createControls() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+       
+    }
+
+    // ---------------- PAUSE ----------------
+    pauseGame() {
+        this.scene.pause(); //Pause the current scene
+        this.scene.launch('PauseScene'); // Start a pause scene to display the menu or information
+    }
+
+    createPauseControls(){
+        //To activate pause menu
+        this.escapeKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.escapeKey.on('down', () => {
+            this.pauseGame(); //Calls up the pause function
+        });
     }
 
 
@@ -80,7 +129,7 @@ class MainScene extends Phaser.Scene {
         });
 
         // Detect collisions between heroes and enemies.
-        this.physics.add.overlap(
+        this.heroEnemyCollider = this.physics.add.overlap(
             this.hero.getSprite(), 
             this.enemies, 
             (heroSprite, enemyContainer) => {
@@ -134,7 +183,7 @@ class MainScene extends Phaser.Scene {
         //Position the text indicating the number of attack points
         this.attackPointsText = this.add.text(
             50, 40, 
-            `${this.hero.attackPoints}`, // Texte initial
+            `${this.hero.attackPoints}`, //Initial text
             { font: "20px Arial", fill: "#ffffff" }
         ).setScrollFactor(0);
     }
@@ -208,6 +257,18 @@ class MainScene extends Phaser.Scene {
         });
     }
 
+    //When the hero dies, change the speed of the enemies to give the illusion of a fast race.
+    changeEnemySpeed(newSpeed) {
+        this.enemies.getChildren().forEach(enemy => {
+            if (enemy.body) {
+                enemy.body.setVelocityX(newSpeed); // Appliquer la nouvelle vitesse
+                console.log(`Updated enemy speed to: ${newSpeed}`);
+            } else {
+                console.warn("Enemy does not have a body:", enemy);
+            }
+        });
+    }
+
 
 
     
@@ -230,7 +291,7 @@ class MainScene extends Phaser.Scene {
 
     }
 
-    //Create the ground
+    //Create the ground and move it to the left
     createGrounds(){
         this.grounds = []; //Table for storing all ground instances
         const groundWidth = 700; // Floor width (corresponds to the image)
@@ -248,7 +309,7 @@ class MainScene extends Phaser.Scene {
     }
 
 
-    //Make the ground move to the left and loop it
+    //Loop the ground texture
     updateGrounds() {
         // Reset floor pieces that leave the screen
         const groundWidth = 700; // Largeur d'un morceau de sol
@@ -275,20 +336,23 @@ class MainScene extends Phaser.Scene {
 
     //Make tree sprites move to the right and loop it
     updateTreeEnvironment() {
-        const decorationSpeed = -25; // Vitesse de déplacement des décorations
+        if (this.isGameOver) {
+            return; // Dont update decorations if the game is over
+        }
+        const decorationSpeed = -25; //Decoration movement speed
 
         this.decorations.forEach((decoration) => {
-            // Déplacer chaque décoration vers la gauche
-            decoration.x += decorationSpeed * (1 / 60); // Déplacement basé sur 60 FPS
+            //Move each decoration to the left
+            decoration.x += decorationSpeed * (1 / 60); //Movement based on 60 FPS
 
-            // Si l'image sort de l'écran à gauche
+            // If the image leaves the screen on the left
             if (decoration.x + decoration.displayWidth <= 0) {
-                // Trouver la dernière image visible
+                // Find the last visible image
                 const rightmostDecoration = this.decorations.reduce((rightmost, current) => {
                     return current.x > rightmost.x ? current : rightmost;
                 });
 
-                // Repositionner cette image après la dernière image visible
+                // Reposition this image after the last visible image
                 decoration.x = rightmostDecoration.x + rightmostDecoration.displayWidth;
             }
         });
@@ -308,6 +372,8 @@ class MainScene extends Phaser.Scene {
       
     }
 
+
+    // ---------------- HITBOXES ----------------
     //Initialiez hitboxes
     setHitBoxes() {
         this.hitboxDebug = this.add.graphics();

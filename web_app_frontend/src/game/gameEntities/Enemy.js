@@ -3,6 +3,8 @@ export default class Enemy {
         this.scene = scene;
         this.sequence = sequence;
 
+        this.enemyVelocity = -20;
+
         // Create enemy sprite
         this.sprite = this.scene.add.sprite(0, 0, "enemySprite");
         this.sprite.setSize(20, 30);
@@ -29,7 +31,10 @@ export default class Enemy {
 
     //Animate the enemy and make it go to the left
     moveEnemyToLeft() {
-        this.container.body.setVelocityX(-20); // Moving the container to the left
+        if (this.scene.isGameOver) {
+            this.enemyVelocity = -200
+        }
+        this.container.body.setVelocityX(this.enemyVelocity); // Moving the container to the left
         this.sprite.play("enemy-move-left", true); // Play the animation for moving left
     }
 

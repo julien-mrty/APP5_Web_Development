@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 
-
 //Background Menu 
 import MenuBackground from "/src/gameAssets/gameBackgrounds/mainMenuImage.png"
 
