@@ -14,11 +14,23 @@ const config = {
 
 let game;
 
-// Fonction pour démarrer le jeu
+
+//Game start function
 function startGame() {
-    if (!game) {
-        game = new Phaser.Game(config);
+    if (game) {
+        console.warn("Game instance already exists");
+        return game;
+    }
+    game = new Phaser.Game(config);
+    return game;
+}
+
+// Function to destroy the game
+function destroyGame() {
+    if (game) {
+        game.destroy(true); // Completely destroys the Phaser instance
+        game = null; // Reset reference
     }
 }
 
-export default startGame;
+export { startGame, destroyGame };

@@ -6,8 +6,9 @@
       <h3>{{ user.username }}</h3>
     </div>
     <div class="buttons">
-      <button @click="goToPlay">Play</button>
-      <button @click="goToViewScores">View Scores</button>
+      <button @click="goToRunningGame">Play Running Game</button>
+      <button @click="goToPlay">Play Card Game</button>
+      <button @click="goToViewScores">View Card Game Scores</button>
       <button @click="logout" class="logout-button">Logout</button>
     </div>
   </div>
@@ -23,6 +24,10 @@ export default {
   setup() {
     const router = useRouter();
     const user = ref({ avatar_url: "", username: "" });
+
+    const goToRunningGame = () => {
+      router.push("/runninggame");
+    };
 
     const goToPlay = () => {
       router.push("/playgame");
@@ -75,6 +80,7 @@ export default {
 
     return {
       user,
+      goToRunningGame,
       goToPlay,
       goToViewScores,
       logout,

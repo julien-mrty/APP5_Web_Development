@@ -27,15 +27,15 @@ const routes = [
     component: SignUp
   },
   {
-    path: '/playgame',
-    name: 'PlayGame',
-    component: Play,
-    meta: { requiresAuth: true }
-  },
-  {
     path: '/runninggame',
     name: 'RunningGame',
     component: RunningGame,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/playgame',
+    name: 'PlayGame',
+    component: Play,
     meta: { requiresAuth: true }
   },
   {
