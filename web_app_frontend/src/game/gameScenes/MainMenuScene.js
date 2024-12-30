@@ -1,12 +1,12 @@
 import Phaser from "phaser";
 
 //Background Menu 
-import MenuBackground from "/src/gameAssets/gameBackgrounds/mainMenuImage.png"
+import MenuBackground from "/src/gameAssets/gameUI/mainMenuImage.png"
 
 //Buttons
-import PlayButton from "/src/gameAssets/gameBackgrounds/playButton.png"
-import ScoreButton from "/src/gameAssets/gameBackgrounds/scoreButton.png"
-import GameTitle from "/src/gameAssets/gameBackgrounds/gameTitle.png"
+import PlayButton from "/src/gameAssets/gameUI/playButton.png"
+import ScoreButton from "/src/gameAssets/gameUI/scoreButton.png"
+import GameTitle from "/src/gameAssets/gameUI/gameTitle.png"
 
 class MainMenuScene extends Phaser.Scene {
     constructor() {

@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 //Background Menu 
-import MenuBackground from "/src/gameAssets/gameBackgrounds/mainMenuImage.png"
+import MenuBackground from "/src/gameAssets/gameUI/mainMenuImage.png"
 
 class ScoreScene extends Phaser.Scene {
     constructor() {

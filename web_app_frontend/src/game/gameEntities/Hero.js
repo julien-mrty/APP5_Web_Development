@@ -81,6 +81,7 @@ export default class Hero {
         this.sprite.setTint(0xff0000); // Add a visual effect for death
         
         this.scene.scene.start('GameOverScene', { score: this.scene.score }); // Call the GameOver scene
+        this.scene.scene.pause(); // Pause la scène actuelle
 
         //Think to call a function to display a defeat screen
     }
