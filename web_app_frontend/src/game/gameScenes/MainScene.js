@@ -21,6 +21,9 @@ class MainScene extends Phaser.Scene {
         this.score = 0; //Player score
         this.scoreText = null; //Text displaying the score
         this.isGameOver = false; //Indicates when the game is over
+
+        //Environment
+        this.treeeZeroSpeed = -25; //Tree speed in the foreground
     }
 
     preload() {
@@ -52,16 +55,12 @@ class MainScene extends Phaser.Scene {
         
     }
 
+
     update(time, delta) {
+        this.updateEnvironment();
         this.hero.moveHeroToRight(); //Move the hero
-    
-        this.updateGrounds();  //Manage looping ground
-        this.updateTreeEnvironment(); //Manage looping decorations
-        //this.destroyOffscreenEnemies();  // Destroy enemies outside the screen
         this.destroyOffscreenEnemiesContainer();  // Destroy enemies outside the screen
-
         this.checkPlayerInputForEnemies();
-
         this.updateScore(delta); //Score update
 
         //this.updateEnemyTextPositions();
@@ -71,9 +70,7 @@ class MainScene extends Phaser.Scene {
         //this.enemyHitbox();
         
         //this.characterHitBoxes();
-        // Stopper les mises à jour inutiles
-
-       
+        // Stopper les mises à jour inutiles  
     }
 
     //Reset variables to avoid incoherent behavious where the hero doesn't nor have animation not hitboxes 
@@ -280,25 +277,85 @@ class MainScene extends Phaser.Scene {
     }*/
 
 
-
-    
-
-    
     //------------ENVIRONMENT----------------
     //Create the background (Fog, ground and trees)
     createEnvironment() {
         this.createFog();
-        this.createTreeEnvironment();
-        this.createGrounds();
+        this.treeSeven = this.createEnvironmentObjects("tree7", 536);
+        this.treeSix = this.createEnvironmentObjects("tree6", 536); 
+        this.lightThree = this.createEnvironmentObjects("light3", 536); 
+        this.treesFour = this.createEnvironmentObjects("tree4", 536); 
+        this.treesThree = this.createEnvironmentObjects("tree3", 536); 
+        this.lightTwo = this.createEnvironmentObjects("light2", 536); //Light creation 
+        this.treesZero = this.createEnvironmentObjects("tree0", 550); //Trees creation  
+        this.treesOne = this.createEnvironmentObjects("tree1", 536); //Trees leaves creation
+        
+        this.createGrounds(); //Create physic ground
+        this.foregroundGround = this.createEnvironmentObjects("foregroundGround", 540); //Create decoration ground
+    }
+
+    //Make the background move and loop on itself
+    updateEnvironment(){
+        this.updateGrounds();  //Manage looping ground
+        this.updateEnvironmentObjects(this.treesZero, this.treeeZeroSpeed);
+        this.updateEnvironmentObjects(this.treesOne, this.treeeZeroSpeed);
+        this.updateEnvironmentObjects(this.lightTwo, -15);
+        this.updateEnvironmentObjects(this.treesThree, -15);
+        this.updateEnvironmentObjects(this.treesFour, -10);
+        this.updateEnvironmentObjects(this.lightThree, -5);
+        this.updateEnvironmentObjects(this.treeSix, -5);
+        this.updateEnvironmentObjects(this.treeSeven, -2);
+        this.updateEnvironmentObjects(this.foregroundGround, -70);
+    }
+
+
+    //Function importing a sprite
+    createEnvironmentObjects(imageKey, yPosition) {
+        const decorations = [];
+        const decorationWidth = this.textures.get(imageKey).getSourceImage().width; //Recovers actual image width
+
+        //Calculate the number of decorations needed to cover the screen, plus a margin.
+        const numDecorations = Math.ceil(this.scale.width / decorationWidth) + 2;
+
+        //Add decorations
+        for (let i = 0; i < numDecorations; i++) {
+            const decoration = this.add.sprite(i * decorationWidth, yPosition, imageKey);
+            decoration.setOrigin(0, 1); //Position origin at bottom left
+            decorations.push(decoration);
+        }
+
+        return decorations;
+    }
+
+
+    //Function making environments sprites move to the left and loop it
+    updateEnvironmentObjects(decorations, speed) {
+        if (this.isGameOver) {
+            return; // Dont update decorations if the game is over
+        }
+        decorations.forEach((decoration) => {
+            // Move each decoration to the left
+            decoration.x += speed * (1 / 60); // Motion based on 60 FPS
+
+            // If the image leaves the screen on the left
+            if (decoration.x + decoration.displayWidth <= 0) {
+                //Find the decoration furthest to the right
+                const rightmostDecoration = decorations.reduce((rightmost, current) => {
+                    return current.x > rightmost.x ? current : rightmost;
+                });
+
+                //Reposition this image after the last visible one
+                decoration.x = rightmostDecoration.x + rightmostDecoration.displayWidth;
+            }
+        });
     }
 
     //Create the gray fog in the background
     createFog() {
         //Load fog image to cover entire screen
-        this.fog = this.add.image(0, 0, "Fog"); // Ajoutez l'image à la position (0,0)
-        this.fog.setOrigin(0, 0); // Origine en haut à gauche
-        this.fog.setDisplaySize(this.scale.width, this.scale.height); // Redimensionne pour couvrir l'écran
-
+        this.fog = this.add.image(0, 0, "Fog"); // Add image at position (0,0)
+        this.fog.setOrigin(0, 0); // Origin top left
+        this.fog.setDisplaySize(this.scale.width, this.scale.height); // Resize to cover screen
     }
 
     //Create the ground and move it to the left
@@ -330,48 +387,6 @@ class MainScene extends Phaser.Scene {
             }
         });
     }
-
-    //Crete the trees
-    createTreeEnvironment(){
-        const decorationWidth = 200; // Adjust to the actual width of “tree1”.
-        const numDecorations = Math.ceil(this.scale.width / decorationWidth) + 2;
-
-        this.decorations = [];
-        for (let i = 0; i < numDecorations; i++) {
-            const decoration = this.add.sprite(i * decorationWidth, 536, "tree1");
-            decoration.setOrigin(0, 1); //Bottom left to align correctly
-            this.decorations.push(decoration);
-        }
-    }
-
-    //Make tree sprites move to the right and loop it
-    updateTreeEnvironment() {
-        if (this.isGameOver) {
-            return; // Dont update decorations if the game is over
-        }
-        const decorationSpeed = -25; //Decoration movement speed
-
-        this.decorations.forEach((decoration) => {
-            //Move each decoration to the left
-            decoration.x += decorationSpeed * (1 / 60); //Movement based on 60 FPS
-
-            // If the image leaves the screen on the left
-            if (decoration.x + decoration.displayWidth <= 0) {
-                // Find the last visible image
-                const rightmostDecoration = this.decorations.reduce((rightmost, current) => {
-                    return current.x > rightmost.x ? current : rightmost;
-                });
-
-                // Reposition this image after the last visible image
-                decoration.x = rightmostDecoration.x + rightmostDecoration.displayWidth;
-            }
-        });
-    }
-
-
-     
-    // ---------------- ANIMATIONS ----------------
-    //Create enemy animation and associate it with a sprite
 
 
 
