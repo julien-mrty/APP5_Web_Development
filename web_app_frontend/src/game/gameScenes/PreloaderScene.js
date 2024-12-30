@@ -1,7 +1,9 @@
 import Phaser from "phaser";
 
-//Character
+//Character animations
 import HeroRunAnimation from "/src/gameAssets/gameSprites/HeroRun.png"
+import HeroRunAttackAnimation1 from "/src/gameAssets/gameSprites/RunAttack1.png"
+import HeroRunAttackAnimation2 from "/src/gameAssets/gameSprites/RunAttack2.png"
 import EnemyRunAttackAnimation from "/src/gameAssets/gameSprites/EnemyRunAttack2.png"
 
 //Environment
@@ -57,6 +59,16 @@ class PreloaderScene extends Phaser.Scene {
             frameHeight: 42 //height of a single frame in the spridesheet
         });//Player sprite
 
+        
+        this.load.spritesheet('HeroRunAttackAnimation1', HeroRunAttackAnimation1, {
+            frameWidth: 42,
+            frameHeight: 42,
+        });
+        this.load.spritesheet('HeroRunAttackAnimation2', HeroRunAttackAnimation2, {
+            frameWidth: 42,
+            frameHeight: 42,
+        });
+
         // Load a spritesheet with multiple frames
         this.load.spritesheet('EnemyRunAttackAnimation', EnemyRunAttackAnimation, {
             frameWidth: 42, //width of a single frame in the spridesheet 
@@ -77,6 +89,21 @@ class PreloaderScene extends Phaser.Scene {
             });
         }
 
+        //Load an animation for the attack
+        this.anims.create({
+            key: "hero-attack1",
+            frames: this.anims.generateFrameNumbers("HeroRunAttackAnimation1", { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: 0 // Animation must not loop
+        });
+
+        this.anims.create({
+            key: "hero-attack2",
+            frames: this.anims.generateFrameNumbers("HeroRunAttackAnimation2", { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: 0 
+        });
+
         if (!this.anims.exists('enemy-move-left')) {
             this.anims.create({
                 key: "enemy-move-left",
@@ -87,8 +114,8 @@ class PreloaderScene extends Phaser.Scene {
         }
 
 
-        this.scene.start("MainMenuScene");
-        //this.scene.start("MainScene");
+        //this.scene.start("MainMenuScene");
+        this.scene.start("MainScene");
     }
 }
 
