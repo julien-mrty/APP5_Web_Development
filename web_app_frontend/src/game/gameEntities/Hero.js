@@ -15,22 +15,23 @@ export default class Hero {
         this.attackPoints = 0;
         this.isInvulnerable = false; // To avoid losing several lives quickly when colliding with ennemies
 
+        this.isAttacking = false; 
+
     }
+
 
     //Increases attack points
     addAttackPoint() {
         this.attackPoints += 1;
-        console.log(`Points d'attaque : ${this.attackPoints}`);
         this.scene.updateAttackPointsDisplay(); // Met à jour l'affichage des points
     }
 
-    //Use an attack point to kill   an enemy
+    //Use an attack point to kill an enemy
     useAttackPoint() {
         if (this.attackPoints > 0) {
             this.attackPoints -= 1;
-            console.log(`Points d'attaque restants : ${this.attackPoints}`);
             this.scene.updateAttackPointsDisplay(); // Updates points display
-            return true; // Indicates that a point has been used
+            return true; //Indicates that a point has been used
         }
         return false; //No points available
     }
@@ -60,7 +61,6 @@ export default class Hero {
         }
     }
 
-
     //Animate the hero and make it go to the right to counterbalance ground movement going to the left
     moveHeroToRight() {
         if (this.scene.isGameOver) {
@@ -68,10 +68,11 @@ export default class Hero {
             return; // Do not update decorations if the game is over
         }
 
-      
-
-        this.sprite.setVelocityX(this.heroVelocity); // Move right
-        this.sprite.play("hero-move-right", true); // Play animation
+        // Ne pas changer l'animation si une autre est en cours
+        if (!this.sprite.anims.isPlaying || this.sprite.anims.currentAnim.key === "hero-move-right") {
+            this.sprite.setVelocityX(this.heroVelocity); // Move right
+            this.sprite.play("hero-move-right", true); // Play animation
+        }
     }
 
     //Kill the hero
@@ -85,6 +86,8 @@ export default class Hero {
 
         //Think to call a function to display a defeat screen
     }
+
+    
 
     //Stops all game processes when the player dies
     /*endGame(){
@@ -126,6 +129,25 @@ export default class Hero {
             align: "center"
         }).setOrigin(0.5);
     }*/
+
+        
+
+        updateDetectionZone(offsetX = 100, offsetY = 0) {
+            this.detectionZone.x = this.sprite.x + offsetX;
+            this.detectionZone.y = this.sprite.y + offsetY;
+        
+            // Met à jour la position de la hitbox de débogage si elle existe
+            if (this.debugHitbox) {
+                this.debugHitbox.clear();
+                this.debugHitbox.lineStyle(2, 0xff0000); // Rouge pour débogage
+                this.debugHitbox.strokeRect(
+                    this.detectionZone.x - this.detectionZone.body.width / 2,
+                    this.detectionZone.y - this.detectionZone.body.height / 2,
+                    this.detectionZone.body.width,
+                    this.detectionZone.body.height
+                );
+            }
+        }
 
 
 
