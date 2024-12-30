@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export default class EnemyDetector {
     constructor(scene, detectionZoneConfig) {
         this.scene = scene;
