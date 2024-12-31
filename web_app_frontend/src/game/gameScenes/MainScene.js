@@ -5,8 +5,6 @@ import UserInputHandler from "./../gameUtils/UserInputHandler.js";
 import EnemyDetector from "./../gameUtils/EnemyDetector.js";
 
 
-
-
 class MainScene extends Phaser.Scene {
     constructor() {
         super("MainScene");
@@ -33,6 +31,9 @@ class MainScene extends Phaser.Scene {
         this.attackZonePositionY = 444;
         this.attackZoneWidth = 150;
         this.attackZoneHeight = 50;
+
+        this.distanceTreshold = 100; //Distance in metres from which the number of characters increases by 1
+        this.previousScoreCheckpoint = 0; // Track the last score checkpoint for max sequence adjustment
     }
 
     preload() {
@@ -91,6 +92,7 @@ class MainScene extends Phaser.Scene {
         this.score = 0; //Reset score
         this.scoreSaved = false; // Reset score saved flag
     }
+    
 
     //------------------------------------------------SCORE------------------------------------------------
     //Create the text to display the score
@@ -102,6 +104,7 @@ class MainScene extends Phaser.Scene {
     }
 
     //Updates score based on elapsed time
+    //Increase  the number of characters based on the distance travelled
     updateScore(delta) {
         if (this.isGameOver) {
             return; //Don't update the score if the game is over
@@ -111,6 +114,48 @@ class MainScene extends Phaser.Scene {
 
         this.score += speed * pixelsToMeters * (delta / 1000); //Convert delta (ms) to seconds
         this.scoreText.setText(`Score: ${Math.floor(this.score)} m`); //Update display
+
+        // Check if the score is a multiple of this.distanceTreshold (100) and adjust max sequence length
+        if (
+            Math.floor(this.score) % this.distanceTreshold === 0 && 
+            Math.floor(this.score) !== this.previousScoreCheckpoint &&
+            this.userInputHandler.maxSequence < this.userInputHandler.MAX_SEQUENCE_LIMIT //Ensure it is below the limit
+        ) {
+            this.previousScoreCheckpoint = Math.floor(this.score); //Update the last checkpoint
+            this.userInputHandler.increaseMaxSequence(); //Increase max sequence
+
+            // Display the milestone message
+            this.showMilestoneMessage(this.previousScoreCheckpoint, this.userInputHandler.maxSequence);
+        }
+    }
+
+    //Message indicating the number of meters traveled and the increase 
+    //in the number of characters in a string as a function of this distance.
+    showMilestoneMessage(distance, maxSequence) {
+        const message = `${distance} m parcourus ! Passage à ${maxSequence} caractères !`;
+    
+        //Create the text at the center-top of the screen
+        const milestoneText = this.add.text(
+            this.scale.width / 1.9, 
+            130, 
+            message, 
+            { font: "32px Arial", fill: "#11ad2c", align: "center" }
+        ).setOrigin(0.5, 0.5);
+    
+        // Make the text flash
+        this.tweens.add({
+            targets: milestoneText,
+            alpha: 0, // Fade out to invisible
+            ease: 'Cubic.easeInOut',
+            duration: 500, // Time in ms for each fade
+            repeat: 5, // Number of fade cycles (5 flashes)
+            yoyo: true // Make it fade back in
+        });
+    
+        // Destroy the text after the animation is done
+        this.time.delayedCall(3000, () => {
+            milestoneText.destroy();
+        });
     }
 
     //------------------------------------------------PAUSE------------------------------------------------
@@ -226,7 +271,7 @@ class MainScene extends Phaser.Scene {
     //Create an enemy 
     spawnEnemy() {
         const sequence = this.userInputHandler.generateRandomSequence(); //Generate a sequence for the enemy
-        const enemy = new Enemy(this, this.scale.width + 15, 445, sequence, this.grounds); //Create a new enemy
+        const enemy = new Enemy(this, this.scale.width + 100, 445, sequence, this.grounds); //Create a new enemy
         this.enemies.add(enemy.container); //Add the container to the group
         enemy.hasTriggered = false; //Ajoute la propriété pour suivre l'état du déclenchement
         enemy.moveEnemyToLeft(); //Make the enemy move and play its animation
@@ -455,7 +500,8 @@ class MainScene extends Phaser.Scene {
         });
     }
 
-
+    //------------------------------------------------BACKEND------------------------------------------------
+    //Save the player score and send it to the database
     saveScore() {
         const token = localStorage.getItem("authToken");
         if (!token) {
@@ -490,6 +536,7 @@ class MainScene extends Phaser.Scene {
         });
     }
     
+    //Enables token authentication
     getUserIdFromToken(token) {
         try {
             const payloadBase64Url = token.split(".")[1];

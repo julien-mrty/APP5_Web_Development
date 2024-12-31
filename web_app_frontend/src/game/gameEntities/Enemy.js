@@ -12,7 +12,7 @@ export default class Enemy {
 
         //Create sequence text for this enemy
         this.text = this.scene.add.text(0, -30, sequence, {
-            font: "16px Arial",
+            font: "30px Arial",
             fill: "#ff0000",
         }).setOrigin(0.5);
 

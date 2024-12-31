@@ -1,12 +1,13 @@
 import gameConfig from './../gameConfig/gameConfig.js';
 
+
 export default class UserInputHandler {
     constructor(scene) {
             this.scene = scene; // Reference to parent scene
             this.playerInput = ""; // Saisie utilisateur
-            this.minSequence = 1; // Minimum sequence length
-            this.maxSequence = 2; // Maximum sequence length
+            this.maxSequence = 1; // Maximum sequence length associated with the currents ennemies
             this.playerInputText = null;
+            this.MAX_SEQUENCE_LIMIT = 10; //Maximum number of characters the largest string can have
         }
 
 
@@ -21,8 +22,8 @@ export default class UserInputHandler {
         //const letters = "abcdefghijklmnopqrstuvwxyz0123456789";
         const letters = "abcdefghijklmnopqrstuvwxyz";
 
-        // Determine a random length between minSequence and maxSequence
-        const sequenceLength = Math.floor(Math.random() * (this.maxSequence - this.minSequence + 1)) + this.minSequence;
+        //Determine a length equal to maxSequence
+        const sequenceLength = this.maxSequence;
 
         let sequence = "";
         for (let i = 0; i < sequenceLength; i++) {
@@ -39,7 +40,7 @@ export default class UserInputHandler {
         if (key === "Backspace") {
             if (this.playerInput.length > 0) {
                 this.playerInput = this.playerInput.slice(0, -1); // Deletes the last character
-                console.log("Entrée actuelle après suppression :", this.playerInput);
+                //console.log("Entrée actuelle après suppression :", this.playerInput);
                 this.playerInputText.setText(this.playerInput); // Update display
             }
             return; // Do not continue with the rest of the method
@@ -47,14 +48,13 @@ export default class UserInputHandler {
 
         // If the key is “Enter”, validate the sequence
         if (key === "Enter") {
-            if (this.playerInput.length >= this.minSequence && this.playerInput.length <= this.maxSequence) { // Vérifier uniquement si l'utilisateur a bien une chaine dans l'intervalle de minSequence et maxSequence
-                //this.checkPlayerInput(); // Call function to check input
-                this.scene.checkPlayerInputForEnemies(this.playerInput); // Vérifie l'entrée pour tous les ennemis
-                this.playerInput = ""; // Reset après validation
-                this.playerInputText.setText(this.playerInput); // Réinitialiser l'affichage
+            if (this.playerInput.length <= this.maxSequence) { // Check only if the user has a string below maxSequence
+                this.scene.checkPlayerInputForEnemies(this.playerInput); // Checks entry for all enemies
+                this.playerInput = ""; // Reset after validation
+                this.playerInputText.setText(this.playerInput); // Reset display
             } 
             else {
-                console.log("Erreur : La saisie doit contenir entre " + this.minSequence + " et " + this.maxSequence + " caractères.");
+                //console.log("Erreur : La saisie doit contenir moins de " + this.maxSequence + " caractères.");
             }
             return;
         }
@@ -73,7 +73,7 @@ export default class UserInputHandler {
         }
 
         if (this.playerInput.length >= this.maxSequence) {
-            console.log("Vous avez atteint la longueur maximale d'entrée.");
+            //console.log("Vous avez atteint la longueur maximale d'entrée.");
             return;
         }
        
@@ -88,6 +88,13 @@ export default class UserInputHandler {
             this.playerInput, // Initially empty
             { font: "32px Arial", fill: "#ffffff" } // Text in red
         ).setOrigin(0.5, 0.5);
+    }
+
+    increaseMaxSequence() {
+        if (this.maxSequence < this.MAX_SEQUENCE_LIMIT) { //Cap to prevent infinite growth
+            this.maxSequence++;
+            //console.log(`Max sequence length increased to: ${this.maxSequence}`);
+        }
     }
 
 
