@@ -33,7 +33,7 @@ export default class EnemyDetector {
                 const enemy = enemyContainer.enemyInstance;
                 if (enemy && !this.detectedEnemies.includes(enemy)) {
                     this.detectedEnemies.push(enemy); //Adds enemy to list
-                    console.log("Enemy entered detection zone.");
+                    //console.log("Enemy entered detection zone.");
                 }
             },
             null,
@@ -75,7 +75,7 @@ export default class EnemyDetector {
     //Triggers the hero's attack animation
     triggerHeroAttackAnimation(hero, enemy) {
         if (hero.attackPoints > 0 && !hero.isAttacking) { //Checks if the hero can attack
-            console.log("Enemy in range! Triggering attack animation.");
+            //console.log("Enemy in range! Triggering attack animation.");
             hero.isAttacking = true;
 
             const attackAnimationKey = Phaser.Math.Between(0, 1) === 0 ? "hero-attack1" : "hero-attack2";
@@ -86,12 +86,12 @@ export default class EnemyDetector {
                 if (animation.key === attackAnimationKey) {
                     hero.isAttacking = false;
                     hero.sprite.play("hero-move-right", true);
-                    console.log("Retour à l'animation de course.");
+                    //console.log("Retour à l'animation de course.");
                     this.detectedEnemies = this.detectedEnemies.filter((e) => e !== enemy); // Removes enemy from list
                 }
             });
         } else {
-            console.log("Héros ne peut pas attaquer !");
+            //console.log("Héros ne peut pas attaquer !");
         }
     }
 
