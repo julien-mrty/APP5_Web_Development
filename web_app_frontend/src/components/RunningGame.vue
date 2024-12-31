@@ -13,7 +13,7 @@ export default {
     mounted() {
         //Starting the game
         this.gameInstance = startGame()
-        console.log("Game Started", this.gameInstance); // Check that the game has been imported
+        //console.log("Game Started", this.gameInstance); // Check that the game has been imported
     },
     beforeUnmount() {
         // Destroys the Phaser instance
