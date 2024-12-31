@@ -7,5 +7,5 @@ import (
 )
 
 func CreateRunningGameScore(c *gin.Context) {
-    helpers.HandleCreate(c, services.CreateRunningGameScore)
+	helpers.HandleCreate(c, services.CreateRunningGameScore)
 }
