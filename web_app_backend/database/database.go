@@ -89,7 +89,7 @@ func ConnectDB() error {
 
 func migrateTables() error {
 	// Migrate the models to create the tables in the database
-	err := DB.AutoMigrate(&models.User{}, &models.Game{}, &models.Score{})
+	err := DB.AutoMigrate(&models.User{}, &models.Game{}, &models.Score{}, &models.RunningGameScore{})
 	if err != nil {
 		return err
 	}

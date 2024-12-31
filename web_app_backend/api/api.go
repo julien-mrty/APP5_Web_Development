@@ -51,6 +51,11 @@ func SetupRoutes(r *gin.Engine) {
 			scores.GET(":id", controllers.GetScoreByID) // Endpoint to retrieve a score by its ID
 		}
 
+		runningScores := v1.Group("/runningScores").Use(middleware.AuthMiddleware())
+		{
+			runningScores.POST("", controllers.CreateRunningGameScore) //Save a score for RunningGame
+		}
+
 		// Authentication-related routes (not protected)
 		auth := v1.Group("/auth")
 		{
