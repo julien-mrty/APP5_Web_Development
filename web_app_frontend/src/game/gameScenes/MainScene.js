@@ -61,6 +61,15 @@ class MainScene extends Phaser.Scene {
 
     //Method called every frames
     update(time, delta) {
+        if (this.isGameOver) {
+            if (!this.scoreSaved) {
+                this.saveScore(); //Save score once only and send it to the database
+                this.scoreSaved = true; //Mark score as saved
+            }
+            return; //Prevent from updating the game if it's over
+        }
+
+
         this.updateEnvironment(); //Make the environement move
         this.hero.moveHeroToRight(); //Move the hero
         this.destroyOffscreenEnemiesContainer();  //Destroy enemies outside of the screen on the left
@@ -80,6 +89,7 @@ class MainScene extends Phaser.Scene {
         this.isGameOver = false; //Reset end-of-game status
         this.hero = null; //Reset hero
         this.score = 0; //Reset score
+        this.scoreSaved = false; // Reset score saved flag
     }
 
     //------------------------------------------------SCORE------------------------------------------------
@@ -425,7 +435,6 @@ class MainScene extends Phaser.Scene {
        });
     }
 
-   
 
     //Create the hitbox of enemies
     enemyHitbox() {
@@ -444,6 +453,53 @@ class MainScene extends Phaser.Scene {
                 );
             }
         });
+    }
+
+
+    saveScore() {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            console.error("User not authenticated");
+            return;
+        }
+    
+        const apiUrl = import.meta.env.VITE_APP_API_URL;
+        const payload = {
+            UserID: this.getUserIdFromToken(token), //Extract user from token
+            Points: Math.floor(this.score), //Round off the score before sending it off
+        };
+    
+        fetch(`${apiUrl}/api/runningScores`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+        })
+        .then((response) => {
+            if (!response.ok) {
+                return response.json().then((data) => {
+                    throw new Error(data.message || "Failed to save score");
+                });
+            }
+            console.log("Running game score saved successfully");
+        })
+        .catch((error) => {
+            console.error("Error saving running game score:", error);
+        });
+    }
+    
+    getUserIdFromToken(token) {
+        try {
+            const payloadBase64Url = token.split(".")[1];
+            const payloadBase64 = payloadBase64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const decodedPayload = JSON.parse(atob(payloadBase64));
+            return decodedPayload.userID || decodedPayload.id;
+        } catch (error) {
+            console.error("Failed to decode token:", error);
+            return null;
+        }
     }
 
 }

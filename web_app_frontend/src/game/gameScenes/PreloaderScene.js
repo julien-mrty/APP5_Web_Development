@@ -114,8 +114,8 @@ class PreloaderScene extends Phaser.Scene {
         }
 
 
-        //this.scene.start("MainMenuScene");
-        this.scene.start("MainScene");
+        this.scene.start("MainMenuScene");
+        //this.scene.start("MainScene");
     }
 }
 
