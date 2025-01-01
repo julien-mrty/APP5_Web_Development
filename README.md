@@ -84,7 +84,9 @@ For further customizations, refer to the Docker Compose file and the service Doc
 
 
 
-### Crédits 
+
+
+### Credits 
 This game contains several audio and visual files. This section is intended to credit their original creators:
 
 Pink character animations : https://craftpix.net/freebies/free-tiny-pixel-hero-sprites-with-bow-attacks/
@@ -98,6 +100,7 @@ Sword sound : https://mixkit.co/free-sound-effects/sword/ (Fast sword whoosh)
 Menu music : https://www.youtube.com/watch?v=oMgQJEcVToY&list=PLzjkiYUjXuevVG0fTOX4GCTzbU0ooHQ-O&index=1 (Kirby's Return to Dream Land Title Theme 8 Bit Remix - By Bulby on YouTube)
 
 Game music : https://www.fesliyanstudios.com/royalty-free-music/downloads-c/8-bit-music/6  (Funny Bit - by David Renda) 
+or  https://www.youtube.com/watch?v=NjpjKDqKwfo&t=4s (Funny Bit - by FesliyanStudios Background Music on YouTube) 
 
 Game Over music : https://www.youtube.com/watch?v=br3OzOrARh4  (Game Over by MB Music on YouTube)
 
