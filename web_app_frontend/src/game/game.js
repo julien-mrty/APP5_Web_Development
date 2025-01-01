@@ -6,10 +6,14 @@ import MainScene from "./gameScenes/MainScene";
 import ScoreScene from "./gameScenes/ScoreScene.js";
 import PauseScene from "./gameScenes/PauseScene.js";
 import GameOverScene from './gameScenes/GameOverScene';
+import MusicScene from './gameScenes/MusicScene';
 
 const config = {
     ...gameConfig,
-    scene: [PreloaderScene, MainMenuScene, ScoreScene, MainScene, PauseScene, GameOverScene], // Add scenes
+    scene: [PreloaderScene, MusicScene, MainMenuScene, ScoreScene, MainScene, PauseScene, GameOverScene], // Add scenes
+    audio: {
+        disableWebAudio: false,
+    }
 };
 
 let game;

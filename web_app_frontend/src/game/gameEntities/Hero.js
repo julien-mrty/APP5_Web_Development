@@ -19,11 +19,10 @@ export default class Hero {
 
     }
 
-
-    //Increases attack points
+    //Increases attack points by one
     addAttackPoint() {
         this.attackPoints += 1;
-        this.scene.updateAttackPointsDisplay(); // Met à jour l'affichage des points
+        this.scene.updateAttackPointsDisplay(); //Updates points display
     }
 
     //Use an attack point to kill an enemy
@@ -65,7 +64,7 @@ export default class Hero {
     moveHeroToRight() {
         if (this.scene.isGameOver) {
             this.heroVelocity = 0
-            return; // Do not update decorations if the game is over
+            return; //Prevent the hero from moving whe the game is over
         }
 
         // Ne pas changer l'animation si une autre est en cours
@@ -77,79 +76,15 @@ export default class Hero {
 
     //Kill the hero
     die() {
-        this.scene.isGameOver = true; // Indiquer que le jeu est terminé
+        this.scene.isGameOver = true; //Indicate that the game is over
         console.log("Hero is dead!");
-        this.sprite.setTint(0xff0000); // Add a visual effect for death
-        
-        this.scene.scene.start('GameOverScene', { score: this.scene.score }); // Call the GameOver scene
-        this.scene.scene.pause(); // Pause la scène actuelle
+        this.sprite.setTint(0xff0000); //Add a visual effect for death
 
-        //Think to call a function to display a defeat screen
+        //Stop the music on the main stage
+        this.scene.stopMusic();
+        this.scene.scene.start('GameOverScene', { score: this.scene.score }); //Call the GameOver scene
+        this.scene.scene.pause(); //Pause the current scene
     }
-
-    
-
-    //Stops all game processes when the player dies
-    /*endGame(){
-        const newEnemySpeed = -200; //change current enemies speed to give the illusion that they're running fast
-        this.scene.changeEnemySpeed(newEnemySpeed);
-
-        // Stop the hero's movement
-        this.sprite.setVelocity(0); // Set speed to 0
-        this.sprite.body.allowGravity = false; // Deactivate gravity to keep it stationary
-
-        // Disable enemy overlay 
-        this.scene.physics.world.removeCollider(this.scene.heroEnemyCollider);
-
-
-        // Stop floors
-        this.scene.grounds.forEach(ground => {
-            if (ground.body) {
-                ground.body.setVelocityX(0); // Stop physical movement
-            } 
-        });
-
-        // Stop decorating
-        this.scene.decorations.forEach(decoration => {
-            decoration.x = decoration.x; //Freezes the current position of the decorations
-        });
-
-        //Stop score update
-        this.scene.updateScore = () => {}; //Replace the method so that it does nothing
-
-    
-        // Continue with hero animation only. Replace with death animation
-        //this.sprite.play("hero-move-right", true);
-
-        //Displays the final score
-        const { width, height } = this.scene.scale;
-        this.scene.add.text(width / 2, height / 2, `Game Over\nScore: ${Math.floor(this.scene.score)} m`, {
-            font: "32px Arial",
-            fill: "#ffffff",
-            align: "center"
-        }).setOrigin(0.5);
-    }*/
-
-        
-
-        updateDetectionZone(offsetX = 100, offsetY = 0) {
-            this.detectionZone.x = this.sprite.x + offsetX;
-            this.detectionZone.y = this.sprite.y + offsetY;
-        
-            // Met à jour la position de la hitbox de débogage si elle existe
-            if (this.debugHitbox) {
-                this.debugHitbox.clear();
-                this.debugHitbox.lineStyle(2, 0xff0000); // Rouge pour débogage
-                this.debugHitbox.strokeRect(
-                    this.detectionZone.x - this.detectionZone.body.width / 2,
-                    this.detectionZone.y - this.detectionZone.body.height / 2,
-                    this.detectionZone.body.width,
-                    this.detectionZone.body.height
-                );
-            }
-        }
-
-
 
     getSprite() {
         return this.sprite;
