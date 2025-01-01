@@ -6,6 +6,7 @@ import Play from '../components/PlayGame.vue';
 import RunningGame from '../components/RunningGame.vue';
 import Scores from '../components/GameScores.vue';
 import SignUp from "../components/SignUp.vue";
+import RunningGameScores from '../components/RunningGameScores.vue';
 
 
 
@@ -31,6 +32,12 @@ const routes = [
     name: 'RunningGame',
     component: RunningGame,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/runninggamescores',
+    name: 'RunningGameScores',
+    component: RunningGameScores,
+    meta: { requiresAuth: true },
   },
   {
     path: '/playgame',
