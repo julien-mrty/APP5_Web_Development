@@ -7,6 +7,7 @@
     </div>
     <div class="buttons">
       <button @click="goToRunningGame">Play Running Game</button>
+      <button @click="goToViewRunningGameScores">View Runing Game Scores</button>
       <button @click="goToPlay">Play Card Game</button>
       <button @click="goToViewScores">View Card Game Scores</button>
       <button @click="logout" class="logout-button">Logout</button>
@@ -27,6 +28,10 @@ export default {
 
     const goToRunningGame = () => {
       router.push("/runninggame");
+    };
+
+    const goToViewRunningGameScores = () => {
+      router.push("/runninggamescores");
     };
 
     const goToPlay = () => {
@@ -81,6 +86,7 @@ export default {
     return {
       user,
       goToRunningGame,
+      goToViewRunningGameScores,
       goToPlay,
       goToViewScores,
       logout,

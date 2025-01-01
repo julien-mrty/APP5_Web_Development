@@ -29,7 +29,7 @@
                 sur le bouton Entrée. Cela donnera à Blinky un point d’attaque lui permettant de brandir et d'abattre son épée.<br>
                 Ces points sont représentés par le chiffre à côté du symbole de l’épée. Sans point d’attaque, Blinky ne peut attaquer
                 et se retrouve sans défense face aux soldats de Sheeponia. <br>
-                Attention, tout les 100 mètres, ces derniers deviennent plus difficile à occire<br>
+                Attention, tout les 100 mètres, ces derniers deviennent plus difficile à occire.<br>
                 Alors écrivez la séquence le plus rapidement possible avant que l’ennemi ne vous touche ! <br><br>
                 
                 Blinky possède trois points de vie représentés par les cœurs. S’il se fait toucher trois fois, ce sera sa dernière mission… <br><br>
