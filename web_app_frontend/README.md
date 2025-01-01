@@ -17,6 +17,7 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 
 ```sh
 npm install
+npm install phaser
 ```
 
 ### Compile and Hot-Reload for Development

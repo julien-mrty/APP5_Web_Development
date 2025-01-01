@@ -53,8 +53,9 @@ func SetupRoutes(r *gin.Engine) {
 
 		runningScores := v1.Group("/runningScores").Use(middleware.AuthMiddleware())
 		{
-			runningScores.POST("", controllers.CreateRunningGameScore) // Save a score for RunningGame
-			runningScores.GET("", controllers.GetAllRunningGameScores)
+			runningScores.POST("", controllers.CreateRunningGameScore)          // Save a score for RunningGame
+			runningScores.GET("", controllers.GetAllRunningGameScores)          // Get all scores for the authenticated user
+			runningScores.GET("/topSeven", controllers.GetTopRunningGameScores) // Retrieve top 7 scores
 		}
 
 		// Authentication-related routes (not protected)
