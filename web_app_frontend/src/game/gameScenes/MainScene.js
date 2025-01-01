@@ -364,12 +364,12 @@ class MainScene extends Phaser.Scene {
         this.updateEnvironmentObjects(this.groundDecoration, -70);
         this.updateEnvironmentObjects(this.treesZero, this.treeeZeroSpeed);
         this.updateEnvironmentObjects(this.treesOne, this.treeeZeroSpeed);
-        this.updateEnvironmentObjects(this.lightTwo, -15);
+        this.updateEnvironmentObjects(this.lightTwo, -20);
         this.updateEnvironmentObjects(this.treesThree, -15);
         this.updateEnvironmentObjects(this.treesFour, -10);
-        this.updateEnvironmentObjects(this.lightThree, -5);
+        this.updateEnvironmentObjects(this.lightThree, -7);
         this.updateEnvironmentObjects(this.treeSix, -5);
-        this.updateEnvironmentObjects(this.treeSeven, -2);
+        this.updateEnvironmentObjects(this.treeSeven, -3);
     }
 
     //Function to import a sprite 
