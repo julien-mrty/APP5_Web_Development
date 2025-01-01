@@ -25,17 +25,18 @@
          <div class="tutorial-text">
             <p>
                 Tutoriel : <br> <br> 
-                Pour vaincre un ennemi, il suffit d’écrire la séquence de lettre se situant au-dessus de sa tête et d’appuyer 
+                Pour vaincre un ennemi, il suffit d’écrire la séquence de lettre se situant au-dessus de lui et d’appuyer 
                 sur le bouton Entrée. Cela donnera à Blinky un point d’attaque lui permettant de brandir et d'abattre son épée.<br>
                 Ces points sont représentés par le chiffre à côté du symbole de l’épée. Sans point d’attaque, Blinky ne peut attaquer
-                et se retrouve sans défense face aux soldats de Sheeponia. <br> <br>
-                Écrivez la séquence le plus rapidement possible avant que l’ennemi ne vous touche ! <br>
-                Blinky possède trois points de vie représentés par les cœurs. <br>
-                S’il se fait toucher trois fois, ce sera sa dernière mission… <br><br>
+                et se retrouve sans défense face aux soldats de Sheeponia. <br>
+                Attention, tout les 100 mètres, ces derniers deviennent plus difficile à occire<br>
+                Alors écrivez la séquence le plus rapidement possible avant que l’ennemi ne vous touche ! <br><br>
+                
+                Blinky possède trois points de vie représentés par les cœurs. S’il se fait toucher trois fois, ce sera sa dernière mission… <br><br>
 
                 Bon courage ! <br><br>
 
-                (Pour mettre le jeu en pause en appuyez sur "Echap")
+                (Pour mettre le jeu en pause, appuyez sur "Echap")
             </p>
         </div>
     </div>
@@ -119,7 +120,7 @@ button:hover {
     right: 10px; 
     top: 40px; 
     width: 650px; 
-    background-color: green; 
+    background-color: #1d7f2d; 
     color: white; 
     padding: 30px; 
     border-radius: 8px; 
