@@ -91,6 +91,8 @@ This game contains several audio and visual files. This section is intended to c
 
 Pink character animations : https://craftpix.net/freebies/free-tiny-pixel-hero-sprites-with-bow-attacks/
 
+Forest environment sprites : https://edermunizz.itch.io/free-pixel-art-forest
+
 Heart Sprite : https://goblin-mode-games.itch.io/pixel-art-heart-capsules
 
 Sword Sprite : https://catdev-pixelarts.itch.io/catdevs-exotics-swords
