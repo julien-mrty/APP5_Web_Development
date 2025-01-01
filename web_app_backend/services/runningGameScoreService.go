@@ -17,3 +17,29 @@ func GetRunningGameScoresByUserID(userID uint) ([]models.RunningGameScore, error
 	}
 	return scores, nil
 }
+
+func GetTopRunningGameScores(limit int) ([]map[string]interface{}, error) {
+	var scores []models.RunningGameScore
+
+	// Query to get the top scores, preloading the User relation
+	err := database.DB.
+		Order("points DESC").
+		Limit(limit).
+		Preload("User").
+		Find(&scores).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// Transform the result to include usernames
+	var result []map[string]interface{}
+	for _, score := range scores {
+		result = append(result, map[string]interface{}{
+			"Points":    score.Points,
+			"CreatedAt": score.CreatedAt,
+			"username":  score.User.Username, // Include username
+		})
+	}
+
+	return result, nil
+}

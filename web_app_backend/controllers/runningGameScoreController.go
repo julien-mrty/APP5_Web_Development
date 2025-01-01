@@ -36,3 +36,17 @@ func GetAllRunningGameScores(c *gin.Context) {
 
 	c.JSON(http.StatusOK, scores)
 }
+
+func GetTopRunningGameScores(c *gin.Context) {
+	// Define the limit for the top scores
+	const limit = 7
+
+	// Call the service to get the top scores
+	scores, err := services.GetTopRunningGameScores(limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve scores"})
+		return
+	}
+
+	c.JSON(http.StatusOK, scores)
+}
