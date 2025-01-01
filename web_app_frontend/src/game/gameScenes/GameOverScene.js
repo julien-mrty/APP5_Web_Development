@@ -1,15 +1,16 @@
 import Phaser from 'phaser';
 
+//Game over scene class
 class GameOverScene extends Phaser.Scene {
     constructor() {
         super('GameOverScene');
         this.redColor = '#ff0000';
-        this.width = 0; // Dimension initialization
+        this.width = 0; //Dimension initialization
         this.height = 0;
     }
 
     init(data) {
-        this.finalScore = data.score || 0; // Recevoir le score final depuis MainScene
+        this.finalScore = data.score || 0; //Receive the final score from MainScene
     }
 
     create() {
@@ -17,23 +18,27 @@ class GameOverScene extends Phaser.Scene {
         this.width = this.scale.width;
         this.height = this.scale.height;
 
-        // Add text “Game Over"
+        //Play Game Over music
+        this.playGameOverMusic();
+
+        //Add text “Game Over"
         this.add.text(this.width / 2, this.height / 3, 'Game Over', {
             font: '48px Arial',
             fill: '#ff0000' //red
         }).setOrigin(0.5);
 
-        // Display final score
+        //Display final score
         this.add.text(this.width / 2, this.height / 2, `Final Score: ${Math.floor(this.finalScore)} m`, {
             font: '32px Arial',
             fill: '#ffffff' //white
         }).setOrigin(0.5);
 
-        this.buttonRestartGame(); // Add restart button
-        this.buttonReturToMenu(); // Add button to return to the menu
+        this.buttonRestartGame(); //Add restart button
+        this.buttonReturToMenu(); //Add button to return to the menu
 
     }
 
+    //Button to restart the game
     buttonRestartGame() {
         //Button to restart the game
         const restartButton = this.add.text(this.width / 2, this.height / 1.5, 'Restart Game', {
@@ -45,25 +50,26 @@ class GameOverScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive();
 
-        // Click event to restart the game
+        //Click event to restart the game
         restartButton.on('pointerdown', () => {
-            this.scene.stop('MainScene'); // Stop the current game
-            this.scene.stop(); // Stop the game over scene
-            this.scene.start('MainScene'); // Restart the main game scene
+            this.stopGameOverMusic(); //Stop the music
+            this.scene.stop('MainScene'); //Stop the current game
+            this.scene.stop(); //Stop the game over scene
+            this.scene.start('MainScene'); //Restart the main game scene
         });
 
-        // Change button appearance on hover
+        //Change button appearance on hover
         restartButton.on('pointerover', () => {
             restartButton.setStyle({ fill: '#e9ec34' });
         });
 
-        // Change button appearance when not hover
+        //Change button appearance when not hover
         restartButton.on('pointerout', () => {
             restartButton.setStyle({ fill: '#ffffff' });
         });
     }
 
-    // Button to return to main menu
+    //Button to return to main menu
     buttonReturToMenu(){
         
         const mainMenuButton = this.add.text(this.width / 2, this.height / 1.3, 'Return to Main Menu', {
@@ -77,9 +83,10 @@ class GameOverScene extends Phaser.Scene {
 
         //Button event management
         mainMenuButton.on('pointerdown', () => {
-            this.scene.stop('MainScene'); // Stop the game scene
-            this.scene.stop(); // Stop GameOverScene
-            this.scene.start('MainMenuScene'); // Back to main menu
+            this.stopGameOverMusic(); //Stop the music
+            this.scene.stop('MainScene'); //Stop the game scene
+            this.scene.stop(); //Stop GameOverScene
+            this.scene.start('MainMenuScene'); //Back to main menu
         });
 
         mainMenuButton.on('pointerover', () => {
@@ -89,6 +96,28 @@ class GameOverScene extends Phaser.Scene {
         mainMenuButton.on('pointerout', () => {
             mainMenuButton.setStyle({ fill: '#ffffff' });
         });
+    }
+
+    playGameOverMusic() {
+        //Play the Game Over music
+        if (!this.gameOverMusic) {
+            this.gameOverMusic = this.sound.add('gameOverMusic', {
+                volume: 0.5,
+                loop: false, //Play only once
+            });
+        }
+
+        //Play the music if not already playing
+        if (!this.gameOverMusic.isPlaying) {
+            this.gameOverMusic.play();
+        }
+    }
+
+    //Stop the music if it is playing
+    stopGameOverMusic() {
+        if (this.gameOverMusic && this.gameOverMusic.isPlaying) {
+            this.gameOverMusic.stop();
+        }
     }
 }
 

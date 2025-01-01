@@ -19,7 +19,6 @@ export default class UserInputHandler {
     //Generate a random sequence of letters.
     generateRandomSequence() {
         //Set of valid characters
-        //const letters = "abcdefghijklmnopqrstuvwxyz0123456789";
         const letters = "abcdefghijklmnopqrstuvwxyz";
 
         //Determine a length equal to maxSequence

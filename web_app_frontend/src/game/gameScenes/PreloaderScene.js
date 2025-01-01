@@ -7,9 +7,8 @@ import HeroRunAttackAnimation2 from "/src/gameAssets/gameSprites/RunAttack2.png"
 import EnemyRunAttackAnimation from "/src/gameAssets/gameSprites/EnemyRunAttack2.png"
 
 //Environment
-import GroundSprite from "/src/gameAssets/gameBackgrounds/tile2.png"
-import Fog from "/src/gameAssets/gameBackgrounds/Fog.png"
-import ForegroundGround from "/src/gameAssets/gameBackgrounds/tile1.png"
+import GroundSprite from "/src/gameAssets/gameBackgrounds/ground.png"
+import GroundDecoration from "/src/gameAssets/gameBackgrounds/groundDecoration.png"
 import Tree0 from "/src/gameAssets/gameBackgrounds/0tree.png"
 import Tree1 from "/src/gameAssets/gameBackgrounds/1tree.png"
 import Light2 from "/src/gameAssets/gameBackgrounds/2light.png"
@@ -18,10 +17,19 @@ import Tree4 from "/src/gameAssets/gameBackgrounds/4tree.png"
 import Light5 from "/src/gameAssets/gameBackgrounds/5light.png"
 import Tree6 from "/src/gameAssets/gameBackgrounds/6tree.png"
 import Tree7 from "/src/gameAssets/gameBackgrounds/7tree.png"
+import Fog from "/src/gameAssets/gameBackgrounds/Fog.png"
 
 //User Interface sprites
 import Heart from "/src/gameAssets/gameSprites/heart.png"
 import Sword from "/src/gameAssets/gameSprites/sword.png"
+
+//Music
+import MainMenuMusic from "/src/gameAssets/gameSounds/mainMenuMusic.mp3"
+import RunningGameMusic from "/src/gameAssets/gameSounds/runningGameMusic.mp3"
+import GameOverMusic from "/src/gameAssets/gameSounds/gameOverMusic.mp3";
+
+//Sound
+import AttackSound from "/src/gameAssets/gameSounds/sword.mp3"
 
 
 class PreloaderScene extends Phaser.Scene {
@@ -41,7 +49,7 @@ class PreloaderScene extends Phaser.Scene {
             light3: Light5,
             tree6: Tree6,
             tree7: Tree7,
-            foregroundGround: ForegroundGround,
+            groundDecoration: GroundDecoration,
         };
     
         // Load all images dynamically
@@ -49,9 +57,8 @@ class PreloaderScene extends Phaser.Scene {
             this.load.image(key, path);
         }
 
-        
         this.load.image('heartSprite', Heart); //Load the sprite for the heart
-        this.load.image('swordSprite', Sword); //Load the sprite for the sword
+        this.load.image('swordSprite', Sword); 
 
         // Load a spritesheet with multiple frames
         this.load.spritesheet('RunAnimation', HeroRunAnimation, {
@@ -69,12 +76,15 @@ class PreloaderScene extends Phaser.Scene {
             frameHeight: 42,
         });
 
-        // Load a spritesheet with multiple frames
         this.load.spritesheet('EnemyRunAttackAnimation', EnemyRunAttackAnimation, {
-            frameWidth: 42, //width of a single frame in the spridesheet 
-            frameHeight: 42 //height of a single frame in the spridesheet
-        });//Player sprite
+            frameWidth: 42,
+            frameHeight: 42 
+        });
 
+        this.load.audio('attackSound', AttackSound); //Load the sound attack sound
+        this.load.audio('mainMenuMusic', MainMenuMusic); //Load the music of the menu
+        this.load.audio('runningGameMusic', RunningGameMusic); //Load the music of the game
+        this.load.audio('gameOverMusic', GameOverMusic); //Load the music of the game over
 
     }
 
@@ -113,9 +123,7 @@ class PreloaderScene extends Phaser.Scene {
             });
         }
 
-
         this.scene.start("MainMenuScene");
-        //this.scene.start("MainScene");
     }
 }
 

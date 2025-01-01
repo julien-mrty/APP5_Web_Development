@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 
+//This class defines a hitbox that activates the attack animation if the hero can.
 export default class EnemyDetector {
     constructor(scene, detectionZoneConfig) {
         this.scene = scene;
@@ -42,25 +43,6 @@ export default class EnemyDetector {
     }
 
     
-    //Updates detection zone position
-    updateDetectionZone(x, y) {
-        this.detectionZone.x = x;
-        this.detectionZone.y = y;
-
-        //Update debug hitbox if necessary
-        if (this.debugHitbox) {
-            this.debugHitbox.clear();
-            this.debugHitbox.lineStyle(2, 0x00ff00); //Green for detection zone
-            this.debugHitbox.strokeRect(
-                this.detectionZone.x - this.detectionZone.body.width / 2,
-                this.detectionZone.y - this.detectionZone.body.height / 2,
-                this.detectionZone.body.width,
-                this.detectionZone.body.height
-            );
-        }
-    }
-
-    
     //Check if an enemy can be attacked
     processEnemyDetection(hero) {
         if (hero.attackPoints > 0 && !hero.isAttacking) {
@@ -78,9 +60,13 @@ export default class EnemyDetector {
             //console.log("Enemy in range! Triggering attack animation.");
             hero.isAttacking = true;
 
+            // Playing the attack sound
+            if (this.scene.attackSound) {
+                this.scene.attackSound.play(); //Calls up the attack sound
+            }
+
             const attackAnimationKey = Phaser.Math.Between(0, 1) === 0 ? "hero-attack1" : "hero-attack2";
             hero.sprite.play(attackAnimationKey, true);
-
             hero.sprite.off("animationcomplete");
             hero.sprite.on("animationcomplete", (animation) => {
                 if (animation.key === attackAnimationKey) {
@@ -90,13 +76,7 @@ export default class EnemyDetector {
                     this.detectedEnemies = this.detectedEnemies.filter((e) => e !== enemy); // Removes enemy from list
                 }
             });
-        } else {
-            //console.log("Héros ne peut pas attaquer !");
-        }
+        } 
     }
 
-    //Removes off-screen or destroyed enemies
-    removeOffscreenEnemies() {
-        this.detectedEnemies = this.detectedEnemies.filter((enemy) => enemy && !enemy.isOutOfBounds());
-    }
 }

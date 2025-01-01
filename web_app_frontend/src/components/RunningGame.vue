@@ -28,10 +28,10 @@
                 Pour vaincre un ennemi, il suffit d’écrire la séquence de lettre se situant au-dessus de sa tête et d’appuyer 
                 sur le bouton Entrée. Cela donnera à Blinky un point d’attaque lui permettant de brandir et d'abattre son épée.<br>
                 Ces points sont représentés par le chiffre à côté du symbole de l’épée. Sans point d’attaque, Blinky ne peut attaquer
-                 et se retrouve sans défense face aux soldats de Sheeponia. <br> <br>
+                et se retrouve sans défense face aux soldats de Sheeponia. <br> <br>
                 Écrivez la séquence le plus rapidement possible avant que l’ennemi ne vous touche ! <br>
                 Blinky possède trois points de vie représentés par les cœurs. <br>
-                S’il se fait toucher plus de trois fois, ce sera sa dernière mission… <br><br>
+                S’il se fait toucher trois fois, ce sera sa dernière mission… <br><br>
 
                 Bon courage ! <br><br>
 
@@ -113,36 +113,36 @@ button:hover {
     background-color: #c82333;
 }
 
-/* Side text styling */
+
 .lore-text {
-    position: fixed; /* Makes the text independent of other elements */
-    right: 10px; /* Adjust the position from the right */
-    top: 80px; /* Adjust the position from the top */
-    width: 650px; /* Set a fixed width for the text block */
-    background-color: green; /* Background color */
-    color: white; /* Text color */
-    padding: 30px; /* Padding for better readability */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow */
+    position: fixed; 
+    right: 10px; 
+    top: 40px; 
+    width: 650px; 
+    background-color: green; 
+    color: white; 
+    padding: 30px; 
+    border-radius: 8px; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); 
     font-size: 14px;
     line-height: 1.5;
-    z-index: 1000; /* Ensures it appears on top */
+    z-index: 1000; 
 }
 
-/* Side text styling */
+
 .tutorial-text {
-    position: fixed; /* Makes the text independent of other elements */
-    right: 10px; /* Adjust the position from the right */
-    top: 340px; /* Adjust the position from the top */
-    width: 650px; /* Set a fixed width for the text block */
-    background-color: green; /* Background color */
-    color: white; /* Text color */
-    padding: 30px; /* Padding for better readability */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow */
+    position: fixed; 
+    right: 10px; 
+    top: 300px; 
+    width: 650px;
+    background-color: green; 
+    color: white;
+    padding: 30px; 
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); 
     font-size: 14px;
     line-height: 1.5;
-    z-index: 1000; /* Ensures it appears on top */
+    z-index: 1000; 
 }
 
 

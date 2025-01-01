@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 class PauseScene extends Phaser.Scene {
     constructor() {
         super('PauseScene');
-        this.width = 0; // Dimension initialization
+        this.width = 0; //Dimension initialization
         this.height = 0;
     }
 
@@ -20,11 +20,11 @@ class PauseScene extends Phaser.Scene {
 
         
         this.buttonRestartGame(); //Call the button to restart the game
-        this.buttonReturnToMenu(); // Call the button to return to the game
+        this.buttonReturnToMenu(); //Call the button to return to the game
 
         //Add a manager to resume the game
         this.input.keyboard.on('keydown-ESC', () => {
-            // Restart the main scene and close the pause scene
+            //Restart the main scene and close the pause scene
             this.scene.stop();
             this.scene.resume('MainScene');
         });
@@ -44,12 +44,16 @@ class PauseScene extends Phaser.Scene {
 
         //Click event to restart the game
         restartButton.on('pointerdown', () => {
-            this.scene.stop('MainScene'); // Stop the current game
-            this.scene.stop(); // Stop the pause scene
-            this.scene.start('MainScene'); // Restart the main game scene
+            const mainScene = this.scene.get('MainScene');
+            if (mainScene && !mainScene.isMusicPlaying()) {
+                mainScene.mainSceneMusic.play(); //Restarts music only if not already in progress
+            }
+            this.scene.stop('MainScene'); //Stop the current game
+            this.scene.stop(); //Stop the pause scene
+            this.scene.start('MainScene'); //Restart the main game scene
         });
 
-        // Change button appearance on hover
+        //Change button appearance on hover
         restartButton.on('pointerover', () => {
             restartButton.setStyle({ fill: "#e9ec34" });
         });
@@ -72,10 +76,14 @@ class PauseScene extends Phaser.Scene {
 
         //Click event management to go to the menu
         mainMenuButton.on('pointerdown', () => {
-            // Stop all scenes and return to main menu
-            this.scene.stop('MainScene'); // Stop the game scene
-            this.scene.stop(); // Stop pause scene
-            this.scene.start('MainMenuScene'); // Return to main menu scene
+            const mainScene = this.scene.get('MainScene');
+            if (mainScene) {
+                mainScene.stopMusic(); //Call method to stop music
+            }
+            //Stop all scenes and return to main menu
+            this.scene.stop('MainScene'); //Stop the game scene
+            this.scene.stop(); //Stop pause scene
+            this.scene.start('MainMenuScene'); //Return to main menu scene
         });
 
          //Change hover button appearance
