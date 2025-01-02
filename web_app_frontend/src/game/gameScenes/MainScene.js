@@ -96,6 +96,7 @@ class MainScene extends Phaser.Scene {
         this.hero = null; //Reset hero
         this.score = 0; //Reset score
         this.scoreSaved = false; // Reset score saved flag
+        this.previousScoreCheckpoint = 0; // Resets the last control point
     }
 
     //------------------------------------------------HERO------------------------------------------------
@@ -293,7 +294,7 @@ class MainScene extends Phaser.Scene {
     //Message indicating the number of meters traveled and the increase 
     //in the number of characters in a string as a function of this distance.
     showMilestoneMessage(distance, maxSequence) {
-        const message = `${distance} m parcourus ! Passage à ${maxSequence} caractères !`;
+        const message = `${distance} metres travelled ! Switch to ${maxSequence} letters !`;
     
         //Create the text at the center-top of the screen
         const milestoneText = this.add.text(
